@@ -105,3 +105,9 @@ theme: light
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# 数学公式
+math:
+  mathjax:
+    enable: true
+    tags: ams
