@@ -106,8 +106,9 @@ theme: light
 deploy:
   type: ''
 
-# 数学公式
 math:
+  engine: 'mathjax' # or 'katex'
   mathjax:
-    enable: true
-    tags: ams
+    src: custom_mathjax_source
+    config:
+      # MathJax config
