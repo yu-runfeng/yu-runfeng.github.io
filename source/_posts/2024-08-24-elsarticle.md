@@ -245,7 +245,7 @@ https://www.overleaf.com/learn/latex/Algorithms
 \end{document}
 ```
 这会生成一个两行子图，第一行有3张，第二行有2张。
-![表格注释](../images/20240824/subfigure.png)
+![子图生成](../images/20240824/subfigure.png)
 
 ## 交叉引用 `cleveref`
 交叉引用是Latex一个重要的功能，自带的`\ref`功能只能引用数字，生成出来的效果并不好看，比如“Section <span style="color:blue;">1.1 </span>”, 而不是期刊常见的“<span style="color:blue;">Section 1.1 </span>”。使用`cleveref`宏包解决这个问题。
@@ -316,7 +316,7 @@ https://www.overleaf.com/learn/latex/Algorithms
 \end{document}
 ```
 这会生成一个带引用类型的交叉引用格式。
-![ref](../images/20240824/cleveref.png)
+![交叉引用](../images/20240824/cleveref.png)
 
 ## 横置某页 `pdflscape` `midpage` `afterpage`
 横置一个pdf页码可以解决某个表格或者图太长的问题，使用`pdflscape`可以将某一页横置，以放下这些图表。
@@ -389,7 +389,7 @@ https://www.overleaf.com/learn/latex/Algorithms
 \end{document}
 ```
 这会得到一个横置的页面,注意到这个页面是横置的，所有的内容在页面的上方，下一步是把这些图片垂直居中。
-![landscape](../images/20240824/landscape.png)
+![横置页面](../images/20240824/landscape.png)
 只需要在`landscape`和`figure`环境之间套一层`midpage`环境即可。
 
 ```latex
@@ -413,7 +413,7 @@ https://www.overleaf.com/learn/latex/Algorithms
 \end{document}
 ```
 得到居中的插图：
-![landscape](../images/20240824/landscape_center.png)
+![横置+垂直居中](../images/20240824/landscape_center.png)
 
 但是，横置页前后的文字会因为横置页突然打断，出现大面积空白。这时还需要`afterpage`宏包，使得横置页平滑插入到文字中，用`\afterpage{}`命令把`landscape`环境包裹起来。
 
@@ -441,7 +441,7 @@ https://www.overleaf.com/learn/latex/Algorithms
 ```
 生成的效果如图，可见横置页丝滑插入段落中，没有产生大面积空白
 
-![landscape](../images/20240824/landscape_after.png)
+![横置前后段落中间可断页](../images/20240824/landscape_after.png)
 
 ## 禁止分页
 使用`\nopagebreak`表示禁止在此处断页。
