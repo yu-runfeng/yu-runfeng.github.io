@@ -3,7 +3,6 @@ title: 爱思唯尔期刊Latex模板elsarticle使用心得经验
 tag: Latex
 date: 2024-08-24 21:07:00
 ---
-<!-- {% katex %} \int_a^b \sin x dx{% endkatex %} -->
 
 LaTex是科研写作中常见的排版工具。爱思唯尔期刊提供了Latex模板，使用该模板可简化在投稿过程中关于稿件的排版过程，在编译过后就能得到期刊认可的排版格式。
 

@@ -99,16 +99,19 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 # theme: landscape
-theme: light
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
 
-math:
-  engine: 'mathjax' # or 'katex'
-  mathjax:
-    src: custom_mathjax_source
-    config:
-      # MathJax config
+# math:
+#   engine: katex
+#   katex:
+#     css: https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css
+#     js: https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js
+#     config:
+#       # KaTeX config
+#       throwOnError: false
+#       errorColor: "#cc0000"
