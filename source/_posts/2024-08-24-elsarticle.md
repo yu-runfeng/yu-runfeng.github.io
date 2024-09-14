@@ -527,7 +527,7 @@ There are a number of horizontal spacing macros for LaTeX:
 \end{document}
 ```
 
-其中，控制间距的代码是可以在公式环境内部调整的。
+其中，可以在公式环境内部调整间距。
 ```latex
 \begin{equation}
 \thinmuskip=3mu
@@ -535,4 +535,12 @@ There are a number of horizontal spacing macros for LaTeX:
 \thickmuskip=5mu plus 5mu
 a + b = c
 \end{equation}
+```
+
+最后，`align`环境调整行距，只需在`\\`之后加`[行距]`即可。
+```latex
+\begin{align*}
+    f(x)=x^{2}-2x+1\\[10pt]
+    f(x)=(x-1)^{2}
+\end{align*} 
 ```
