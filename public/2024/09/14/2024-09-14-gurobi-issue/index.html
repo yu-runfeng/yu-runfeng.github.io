@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yrf990409.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近在写一个论文，审稿人让我增加一部分的实验内容，验证我启发式的性能。我选择和Gurobi进行对比。 然后在我和Gurobi进行对比的过程中，发现某几个算例的启发式结果竟然比Gurobi的下界（gap&#x3D;0）还低。 按道理来说，对于一个最小化的问题，上界是不可能比下界还低的，因此我怀疑是我的启发式算法有bug，最开始我是不相信Gurobi会有问题的。 复杂的验证过程以及漫长的Debug中，我发现自己">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gurobi 11.02的一个数值问题">
+<meta property="og:url" content="https://yrf990409.github.io/2024/09/14/2024-09-14-gurobi-issue/index.html">
+<meta property="og:site_name" content="Runfeng的万事屋">
+<meta property="og:description" content="最近在写一个论文，审稿人让我增加一部分的实验内容，验证我启发式的性能。我选择和Gurobi进行对比。 然后在我和Gurobi进行对比的过程中，发现某几个算例的启发式结果竟然比Gurobi的下界（gap&#x3D;0）还低。 按道理来说，对于一个最小化的问题，上界是不可能比下界还低的，因此我怀疑是我的启发式算法有bug，最开始我是不相信Gurobi会有问题的。 复杂的验证过程以及漫长的Debug中，我发现自己">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-09-14T05:38:27.000Z">
+<meta property="article:modified_time" content="2024-09-14T06:26:15.440Z">
+<meta property="article:author" content="Yu Runfeng">
+<meta property="article:tag" content="Gurobi">
+<meta property="article:tag" content="建模">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://yrf990409.github.io/2024/09/14/2024-09-14-gurobi-issue/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://yrf990409.github.io/2024/09/14/2024-09-14-gurobi-issue/","path":"2024/09/14/2024-09-14-gurobi-issue/","title":"Gurobi 11.02的一个数值问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Gurobi 11.02的一个数值问题 | Runfeng的万事屋</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Runfeng的万事屋</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">随便写写啦,反正没人看</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yu Runfeng</p>
+  <div class="site-description" itemprop="description">个人学习记录, 一些运筹, 一些代码, 一些吐槽</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yrf990409" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yrf990409" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yrf990409.github.io/2024/09/14/2024-09-14-gurobi-issue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yu Runfeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Runfeng的万事屋">
+      <meta itemprop="description" content="个人学习记录, 一些运筹, 一些代码, 一些吐槽">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Gurobi 11.02的一个数值问题 | Runfeng的万事屋">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Gurobi 11.02的一个数值问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-09-14 13:38:27 / 修改时间：14:26:15" itemprop="dateCreated datePublished" datetime="2024-09-14T13:38:27+08:00">2024-09-14</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在写一个论文，审稿人让我增加一部分的实验内容，验证我启发式的性能。我选择和Gurobi进行对比。<br>
+然后在我和Gurobi进行对比的过程中，<strong>发现某几个算例的启发式结果竟然比Gurobi的下界（gap=0）还低。</strong><br>
+按道理来说，对于一个最小化的问题，上界是不可能比下界还低的，因此我怀疑是我的启发式算法有bug，最开始我是不相信Gurobi会有问题的。</p>
+<p>复杂的验证过程以及漫长的Debug中，我发现自己的算法好像并没有什么问题，而且只有一两个算例出现了上述的情况。<br>
+接着我发现如果我减少<code>FeasibilityTol</code>和<code>OptimalityTol</code>这两个参数（至最小值10e-9）以提升数值精度，那么情况有会有所改善，但是启发式的结果依旧比下界还低。</p>
+<p>然后，我使用了一个常见的方法，强制决策变量等于启发式的解，把启发式的结果制作成约束添加进模型中，再求解发现Gurobi的结果竟然和我的启发式一致了，且gap等于0。这就出现了悖论：</p>
+<ul>
+<li>在那几个特殊的算例中（增加额外的约束gap=0，不增加约束也是gap=0），最小化问题增加额外的约束竟然使最优目标值更小了。</li>
+</ul>
+<p>这让我觉得太离谱了，增加额外约束最好的情况下也只能是和原问题的最优目标值一致。<br>
+然后和Gurobi社区的工作人员拉扯了一个月，终于搞清楚了，Gurobi承认有bug，并且只能在下个版本修复了。</p>
+<p>在此附上原帖子链接，纪念一下第一次为一个求解器厂商提出实质性bug。</p>
+<p><a target="_blank" rel="noopener" href="https://support.gurobi.com/hc/en-us/community/posts/27254595262993-Add-additional-constraints-but-the-objective-decreased-in-minimize-problem">https://support.gurobi.com/hc/en-us/community/posts/27254595262993-Add-additional-constraints-but-the-objective-decreased-in-minimize-problem</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Gurobi/" rel="tag"># Gurobi</a>
+              <a href="/tags/%E5%BB%BA%E6%A8%A1/" rel="tag"># 建模</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/09/03/2024-09-02-lagrange/" rel="prev" title="拉格朗日松弛算法求解整数规划的基本原理">
+                  <i class="fa fa-angle-left"></i> 拉格朗日松弛算法求解整数规划的基本原理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/09/30/2024-09-30-Gurobi%E6%9D%A1%E4%BB%B6%E7%BA%A6%E6%9D%9F/" rel="next" title="Gurobi条件约束">
+                  Gurobi条件约束 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Yu Runfeng</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

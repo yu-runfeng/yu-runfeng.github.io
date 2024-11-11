@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yrf990409.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="记录在学校的一次matlab课上的技术分享。 前言：本次分享的主要内容是介绍一些我个人Matlab开发常用的经验总结， 目的是让大家了解到matlab的优缺点、独特性、技巧，以及用什么方法解决什么问题。 Matlab是一个复杂的工具，并不是我凭借一己之力可以完全说清楚的。 大部分各种理工科离不开这一工具，而各个学科之间隔行如隔山， 我只是把自己经常使用的经验进行总结，和各位共同分享。 假设：今天不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matlab程序开发经验分享">
+<meta property="og:url" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/index.html">
+<meta property="og:site_name" content="Runfeng的万事屋">
+<meta property="og:description" content="记录在学校的一次matlab课上的技术分享。 前言：本次分享的主要内容是介绍一些我个人Matlab开发常用的经验总结， 目的是让大家了解到matlab的优缺点、独特性、技巧，以及用什么方法解决什么问题。 Matlab是一个复杂的工具，并不是我凭借一己之力可以完全说清楚的。 大部分各种理工科离不开这一工具，而各个学科之间隔行如隔山， 我只是把自己经常使用的经验进行总结，和各位共同分享。 假设：今天不">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20230930182045754.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-wheel.jpg">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20230930192441679.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20230930192625728.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20230930192855816.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20230930194758499.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001134101744.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001134208296.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001134303941.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001134944337.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001135319241.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001140304900.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001140519650.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001140532936.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001201801595.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20240712115425.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001151417317.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001151523651.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001164150891.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231006133646069.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001165505931.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001165725593.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001165858415.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001165922621.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001165952424.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001170909421.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/snap.jpg">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001171745717.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001172136136.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001172945916.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001173153802.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001173452560.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001173620154.png">
+<meta property="og:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20231001184526448.png">
+<meta property="article:published_time" content="2024-07-12T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-10-24T09:20:13.044Z">
+<meta property="article:author" content="Yu Runfeng">
+<meta property="article:tag" content="Matlab">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/image-20230930182045754.png">
+
+
+<link rel="canonical" href="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/","path":"2024/07/12/2024-07-21-matlab/","title":"Matlab程序开发经验分享"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Matlab程序开发经验分享 | Runfeng的万事屋</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Runfeng的万事屋</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">随便写写啦,反正没人看</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text"> 代码优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E5%88%86%E9%85%8D%E5%86%85%E5%AD%98"><span class="nav-number">1.1.</span> <span class="nav-text"> 预分配内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text"> 向量化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%821%E8%87%B310000%E7%9A%84%E6%AF%8F%E4%B8%AA%E6%95%B0%E7%9A%84%E6%AD%A3%E5%BC%A6%E7%9A%84%E5%92%8C"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 求1至10000的每个数的正弦的和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E6%89%A9%E5%B1%95%E6%B1%82%E6%AF%8F%E4%B8%AA%E4%BA%BA%E6%AF%8F%E7%A7%91%E6%88%90%E7%BB%A9%E4%B8%8E%E5%B9%B3%E5%9D%87%E5%80%BC%E7%9A%84%E5%B7%AE%E8%B7%9D"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 隐式扩展，求每个人每科成绩与平均值的差距</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E7%B4%A2%E5%BC%95%E7%BA%BF%E6%80%A7%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%A0%87%E7%B4%A2%E5%BC%95"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 逻辑索引，线性索引，下标索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E6%95%B0%E7%BB%84"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 重复数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98%E5%A4%9A%E4%B8%AA%E7%AD%89%E9%97%B4%E9%9A%94%E6%8C%87%E9%92%88%E7%9A%84%E8%BD%AE%E7%9B%98%E8%B5%8C%E5%A6%82%E4%BD%95%E5%90%91%E9%87%8F%E5%8C%96"><span class="nav-number">1.2.5.</span> <span class="nav-text"> 思考题：多个等间隔指针的轮盘赌如何向量化？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%97%E4%BD%99%E8%BF%90%E7%AE%97"><span class="nav-number">1.3.</span> <span class="nav-text"> 冗余运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="nav-number">1.4.</span> <span class="nav-text"> 性能分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%9B%B4%E5%85%B7%E6%95%88%E7%8E%87%E7%9A%84%E7%AE%97%E6%B3%95"><span class="nav-number">1.5.</span> <span class="nav-text"> 使用更具效率的算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E6%95%B0%E4%B9%8B%E5%92%8C"><span class="nav-number">1.5.1.</span> <span class="nav-text"> 双数之和</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#font-colordd0000%E5%B7%A5%E5%85%B7%E7%AE%B1font"><span class="nav-number">2.</span> <span class="nav-text"> 工具箱</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#matalb-coder"><span class="nav-number">2.1.</span> <span class="nav-text"> Matalb Coder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97%E5%B7%A5%E5%85%B7%E7%AE%B1-parallel-computing-toolbox"><span class="nav-number">2.2.</span> <span class="nav-text"> 并行计算工具箱 parallel computing toolbox</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8Cfor%E5%BE%AA%E7%8E%AF"><span class="nav-number">2.2.1.</span> <span class="nav-text"> 并行for循环</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E8%AE%A1%E7%AE%97%E5%B7%A5%E5%85%B7%E7%AE%B1-symbolic-math-toolbox"><span class="nav-number">2.3.</span> <span class="nav-text"> 符号计算工具箱 Symbolic Math Toolbox</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%80%E5%B7%A7%E7%BB%8F%E9%AA%8C"><span class="nav-number">3.</span> <span class="nav-text"> 技巧经验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%BB%93%E6%9E%84%E4%BD%93%E8%BF%9B%E8%A1%8C%E4%BC%A0%E5%8F%82"><span class="nav-number">3.1.</span> <span class="nav-text"> 使用结构体进行传参</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8F%A5%E6%9F%84%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text"> 使用句柄函数@</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#c-bsxfunfunab"><span class="nav-number">3.2.1.</span> <span class="nav-text"> C &#x3D; bsxfun(fun,A,B)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-cellfunfunc-c"><span class="nav-number">3.2.2.</span> <span class="nav-text"> A &#x3D; cellfun(func, C)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-structfunfunc-s"><span class="nav-number">3.2.3.</span> <span class="nav-text"> A &#x3D; structfun(func, S)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%A5%E5%BF%97"><span class="nav-number">3.3.</span> <span class="nav-text"> 运行日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA"><span class="nav-number">3.4.</span> <span class="nav-text"> 格式化输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E9%97%B4"><span class="nav-number">3.5.</span> <span class="nav-text"> 运行时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E5%B1%82%E5%B5%8C%E5%A5%97"><span class="nav-number">3.6.</span> <span class="nav-text"> 多层嵌套</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#latex%E5%85%AC%E5%BC%8F"><span class="nav-number">3.7.</span> <span class="nav-text"> Latex公式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%97%B6%E8%84%9A%E6%9C%AC%E5%81%9A%E5%B1%95%E7%A4%BA"><span class="nav-number">3.8.</span> <span class="nav-text"> 实时脚本做展示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98"><span class="nav-number">3.9.</span> <span class="nav-text"> 数值精度问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E7%BA%BFmatlab"><span class="nav-number">3.10.</span> <span class="nav-text"> 在线Matlab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#markdown%E8%AF%AD%E8%A8%80"><span class="nav-number">3.11.</span> <span class="nav-text"> Markdown语言</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95debug"><span class="nav-number">4.</span> <span class="nav-text"> 如何DEBUG</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%AD%E7%82%B9"><span class="nav-number">4.1.</span> <span class="nav-text"> 断点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E6%96%AD%E7%82%B9"><span class="nav-number">4.2.</span> <span class="nav-text"> 条件断点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E6%9A%82%E5%81%9C"><span class="nav-number">4.3.</span> <span class="nav-text"> 错误暂停</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E9%97%AE%E9%A2%98"><span class="nav-number">4.4.</span> <span class="nav-text"> 搜索问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#font-colordd0000%E5%90%91%E4%BB%96%E4%BA%BA%E6%8F%90%E9%97%AEfont"><span class="nav-number">4.5.</span> <span class="nav-text"> 向他人提问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-number">4.6.</span> <span class="nav-text"> 文档</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#font-colordd0000%E5%A4%96%E9%83%A8%E5%8A%9F%E8%83%BDfont"><span class="nav-number">5.</span> <span class="nav-text"> 外部功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#python"><span class="nav-number">5.1.</span> <span class="nav-text"> Python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gurobi-%E8%BF%90%E7%AD%B9%E4%BC%98%E5%8C%96%E4%B8%93%E4%B8%9A"><span class="nav-number">5.2.</span> <span class="nav-text"> Gurobi （运筹优化专业）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yalmip-%E8%BF%90%E7%AD%B9%E4%BC%98%E5%8C%96%E6%96%B9%E5%90%91"><span class="nav-number">5.3.</span> <span class="nav-text"> Yalmip （运筹优化方向）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gramm%E7%94%BB%E5%9B%BE"><span class="nav-number">5.4.</span> <span class="nav-text"> gramm（画图）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#one-more-thing"><span class="nav-number">6.</span> <span class="nav-text"> One more thing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">7.</span> <span class="nav-text"> 结语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#matlab%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">7.1.</span> <span class="nav-text"> Matlab优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8matlab"><span class="nav-number">7.2.</span> <span class="nav-text"> 如何使用Matlab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%AD%A6matlab"><span class="nav-number">7.3.</span> <span class="nav-text"> 怎么学Matlab</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yu Runfeng</p>
+  <div class="site-description" itemprop="description">个人学习记录, 一些运筹, 一些代码, 一些吐槽</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yrf990409" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yrf990409" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yrf990409.github.io/2024/07/12/2024-07-21-matlab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yu Runfeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Runfeng的万事屋">
+      <meta itemprop="description" content="个人学习记录, 一些运筹, 一些代码, 一些吐槽">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Matlab程序开发经验分享 | Runfeng的万事屋">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Matlab程序开发经验分享
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-07-12 12:00:00" itemprop="dateCreated datePublished" datetime="2024-07-12T12:00:00+08:00">2024-07-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-10-24 17:20:13" itemprop="dateModified" datetime="2024-10-24T17:20:13+08:00">2024-10-24</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>记录在学校的一次matlab课上的技术分享。</p>
+<p><strong>前言</strong>：本次分享的主要内容是介绍一些我个人Matlab开发常用的经验总结，<br>
+目的是让大家了解到matlab的优缺点、独特性、技巧，以及用什么方法解决什么问题。<br>
+Matlab是一个复杂的工具，并不是我凭借一己之力可以完全说清楚的。<br>
+大部分各种理工科离不开这一工具，而各个学科之间隔行如隔山，<br>
+我只是把自己经常使用的经验进行总结，和各位共同分享。</p>
+<p><strong>假设</strong>：今天不会涉及编程思想（函数式、面向对象等），主要是向大家分享如何用好这一工具。<br>
+假设各位已经掌握matlab的基本语法，并且自己也会写一些代码了。</p>
+<h1 id="代码优化"><a class="markdownIt-Anchor" href="#代码优化"></a> 代码优化</h1>
+<blockquote>
+<p>同样是跑代码，为什么我要等很久？</p>
+</blockquote>
+<p>我们不得不承认，Matlab这种解释型语言比编译型语言要慢（代码在运行时会被一行一行地解释执行），<br>
+这并不代表Matlab代码不能变得高效。</p>
+<h2 id="预分配内存"><a class="markdownIt-Anchor" href="#预分配内存"></a> 预分配内存</h2>
+<p>在进行循环语句时，应当先声明变量所需空间的大小，再进行循环，避免每次循环向数组中增加数字。</p>
+<p><strong>不推荐写法</strong></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tic</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">1000</span></span><br><span class="line">	mat(<span class="built_in">i</span>,<span class="built_in">i</span>) = <span class="built_in">i</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">toc</span><br><span class="line"><span class="comment">% 历时 0.115061 秒。</span></span><br></pre></td></tr></table></figure>
+<p><strong>推荐写法</strong></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tic</span><br><span class="line">mat_2 = <span class="built_in">zeros</span>(<span class="number">1000</span>); <span class="comment">% 先把数组的大小声明，在内存中开辟一块空间</span></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">1000</span></span><br><span class="line">	mat_2(<span class="built_in">i</span>,<span class="built_in">i</span>) = <span class="built_in">i</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">toc</span><br><span class="line"><span class="comment">% 历时 0.005585 秒。</span></span><br></pre></td></tr></table></figure>
+<p><strong>为什么出现这样的差异？</strong></p>
+<p>反复调整数组的大小将导致花费额外的时间找到更大的、<strong>连续的</strong>内存空间。</p>
+<p><strong>所有类型的变量都需要这样做吗？</strong></p>
+<p>不一定，cell类型则不需要，但是放在cell中的数据类型可能需要。<br>
+cell数组内存不连续，但是每个cell要求连续内存。<br>
+（部分情况下cell在编译成mex文件时，同样需要初始化内存）</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/matlab/matlab_prog/preallocating-arrays.html">https://ww2.mathworks.cn/help/matlab/matlab_prog/preallocating-arrays.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/matlab/matlab_prog/techniques-for-improving-performance.html">https://ww2.mathworks.cn/help/matlab/matlab_prog/techniques-for-improving-performance.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/matlab/matlab_prog/avoid-unnecessary-copies-of-data.html">https://ww2.mathworks.cn/help/matlab/matlab_prog/avoid-unnecessary-copies-of-data.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/matlab/matlab_prog/strategies-for-efficient-use-of-memory.html">https://ww2.mathworks.cn/help/matlab/matlab_prog/strategies-for-efficient-use-of-memory.html</a></p>
+<h2 id="向量化"><a class="markdownIt-Anchor" href="#向量化"></a> 向量化</h2>
+<p>官方定义：</p>
+<blockquote>
+<p>修正基于循环且面向标量的代码以使用 MATLAB 矩阵和向量运算的过程称为<em><strong>向量化</strong></em>。</p>
+</blockquote>
+<p>简单来说，就是替代for循环做一些简单操作，以提高运行速度、可读性、正确性。即，算法流程控制<code>for</code>循环，简单操作向量化。<br>
+<strong>向量化是matlab的一个重要特点，这在其他语言很少出现</strong><br>
+向量化的语句通常有底层的支持，利用到了CPU指令集进行优化，因此速度较快，<br>
+而for循环遍历慢的原因是matlab为解释性语言需要一行一行执行。</p>
+<h3 id="求1至10000的每个数的正弦的和"><a class="markdownIt-Anchor" href="#求1至10000的每个数的正弦的和"></a> 求1至10000的每个数的正弦的和</h3>
+<p><strong>循环写法：</strong></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tic</span><br><span class="line">all_sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">1e4</span></span><br><span class="line">	all_sum = all_sum + <span class="built_in">sin</span>(<span class="built_in">i</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="built_in">disp</span>([<span class="string">&#x27;all_sum: &#x27;</span>, num2str(all_sum)])</span><br><span class="line">toc</span><br><span class="line"><span class="comment">% all_sum: 1.6339</span></span><br><span class="line"><span class="comment">% 历时 0.038938 秒。</span></span><br></pre></td></tr></table></figure>
+<p><strong>向量化写法：</strong></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tic</span><br><span class="line">all_sum = sum(<span class="built_in">sin</span>(<span class="number">1</span>:<span class="number">1e4</span>));</span><br><span class="line"><span class="built_in">disp</span>([<span class="string">&#x27;all_sum: &#x27;</span>, num2str(all_sum)])</span><br><span class="line">toc</span><br><span class="line"><span class="comment">% all_sum: 1.6339</span></span><br><span class="line"><span class="comment">% 历时 0.008211 秒。</span></span><br></pre></td></tr></table></figure>
+<p>为什么<code>all_sum</code>这么小？</p>
+<h3 id="隐式扩展求每个人每科成绩与平均值的差距"><a class="markdownIt-Anchor" href="#隐式扩展求每个人每科成绩与平均值的差距"></a> 隐式扩展，求每个人每科成绩与平均值的差距</h3>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% 每个人有三门课，</span></span><br><span class="line"><span class="comment">%    数 语  外</span></span><br><span class="line">A = [<span class="number">97</span> <span class="number">89</span> <span class="number">84</span>; </span><br><span class="line">     <span class="number">95</span> <span class="number">82</span> <span class="number">92</span>; </span><br><span class="line">     <span class="number">64</span> <span class="number">80</span> <span class="number">99</span>;</span><br><span class="line">     <span class="number">76</span> <span class="number">77</span> <span class="number">67</span>;</span><br><span class="line">     <span class="number">88</span> <span class="number">59</span> <span class="number">74</span>; </span><br><span class="line">     <span class="number">78</span> <span class="number">66</span> <span class="number">87</span>; </span><br><span class="line">     <span class="number">55</span> <span class="number">93</span> <span class="number">85</span>];		<span class="comment">% 每一列是一个人</span></span><br></pre></td></tr></table></figure>
+<p><strong>循环写法</strong></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mA = <span class="built_in">mean</span>(A);			<span class="comment">% 求每列的平均值</span></span><br><span class="line">B = <span class="built_in">zeros</span>(<span class="built_in">size</span>(A));		<span class="comment">% 记录每个人每门课的差距</span></span><br><span class="line"><span class="keyword">for</span> n = <span class="number">1</span>:<span class="built_in">size</span>(A,<span class="number">2</span>)		<span class="comment">% 对每一列进行操作</span></span><br><span class="line">    B(:,n) = A(:,n) - mA(n);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p><strong>向量化写法</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">devA = A - mean(A)</span><br></pre></td></tr></table></figure>
+<p>注意，在向量化写法中，<code>mean(A)</code>的结果是1x3大小的。即使 <code>A</code> 是一个 7×3 矩阵，<code>mean(A)</code> 是一个 1×3 向量，MATLAB 也会隐式扩展该向量，就好像其大小与矩阵相同一样，并且该运算将作为正常的按元素减法运算来执行。（广播操作）</p>
+<h3 id="逻辑索引线性索引下标索引"><a class="markdownIt-Anchor" href="#逻辑索引线性索引下标索引"></a> 逻辑索引，线性索引，下标索引</h3>
+<p><strong>介绍三种索引方式的区别</strong></p>
+<p>一个矩阵A ，寻找这个矩阵中大于500的数字的行列数</p>
+<p><strong>循环方法</strong>（单个循环，获得线性索引，双层循环，获得行列数）</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">A = <span class="built_in">magic</span>(<span class="number">100</span>);</span><br><span class="line">tic</span><br><span class="line">sub = <span class="built_in">zeros</span>(sum(A&gt;<span class="number">500</span>, <span class="string">&#x27;all&#x27;</span>), <span class="number">2</span>);</span><br><span class="line">count = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">100</span></span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="number">100</span></span><br><span class="line">		<span class="keyword">if</span> A(<span class="built_in">i</span>,<span class="built_in">j</span>) &gt; <span class="number">500</span></span><br><span class="line">			sub(count,:) = [<span class="built_in">i</span>,<span class="built_in">j</span>];</span><br><span class="line">			count = count + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">end</span></span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">toc</span><br></pre></td></tr></table></figure>
+<p><strong>find方法</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A = magic(100);</span><br><span class="line">tic</span><br><span class="line">[row, col] = find(A&gt;500);</span><br><span class="line">sub = [row, col];</span><br><span class="line">toc</span><br></pre></td></tr></table></figure>
+<p><strong>处处用find真的合适吗？</strong></p>
+<p>求矩阵A中，所有大于500的数的和</p>
+<p><code>sum(A(find(A&gt;500)))</code>线性索引</p>
+<!-- image-20231001192302431.png -->
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20230930182045754.png" alt="image-20230930182045754"></p>
+<p><code>sum(A&gt;500))</code>这里直接使用了逻辑索引，速度比<code>find()</code>更快。</p>
+<h3 id="重复数组"><a class="markdownIt-Anchor" href="#重复数组"></a> 重复数组</h3>
+<p>根据向量、矩阵创造大的重复矩阵。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">A = <span class="built_in">repmat</span>(<span class="number">1</span>:<span class="number">3</span>,<span class="number">5</span>,<span class="number">2</span>)</span><br><span class="line">B = <span class="built_in">repmat</span>([<span class="number">1</span> <span class="number">2</span>; <span class="number">3</span> <span class="number">4</span>],<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">% A =</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%     1     2     3     1     2     3</span></span><br><span class="line"><span class="comment">%     1     2     3     1     2     3</span></span><br><span class="line"><span class="comment">%     1     2     3     1     2     3</span></span><br><span class="line"><span class="comment">%     1     2     3     1     2     3</span></span><br><span class="line"><span class="comment">%     1     2     3     1     2     3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">% B =</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%     1     2     1     2</span></span><br><span class="line"><span class="comment">%     3     4     3     4</span></span><br><span class="line"><span class="comment">%     1     2     1     2</span></span><br><span class="line"><span class="comment">%     3     4     3     4</span></span><br></pre></td></tr></table></figure>
+<h3 id="思考题多个等间隔指针的轮盘赌如何向量化"><a class="markdownIt-Anchor" href="#思考题多个等间隔指针的轮盘赌如何向量化"></a> 思考题：多个等间隔指针的轮盘赌如何向量化？</h3>
+<p>随机遍历抽样（SUS）<br>
+从轮盘赌选择N个结果，则需转动N次转盘。<br>
+然而这样的抽选方式存在一定的不合理性，比如某个区域在轮盘中占据较大的份额，N次转动很有可能多次选中这个个体。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-wheel.jpg" alt="image-20230930192441679"></p>
+<p>现在想一次性选中多个区域，而且尽量不重复。<br>
+使用SUS只需转动一个等间隔指针的圆盘一次，转一次就可以选出所需区域。</p>
+<p><strong>SUS步骤</strong><br>
+假设轮盘总值为F（可以是1），指针选择区域数目为N，则SUS具体步骤如下：</p>
+<p>STEP1：计算指针的间距P=F/N；</p>
+<p>STEP2：随机生成起点指针位置Start=[0~P之间的随机数]；</p>
+<p>STEP3：计算各指针的位置Pointers=[Start+i*P(其中i=[0,1,…N-1])]；</p>
+<p>STEP4：根据各指针位置，选择出N个个体。</p>
+<p>for循环代码</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sel_ind</span> = <span class="title">sus_loop</span><span class="params">(fitness, sel_num)</span></span></span><br><span class="line"><span class="comment">% sus for循环实现，输入适应度和要选择的个数</span></span><br><span class="line"><span class="comment">% 输出被选择的个体的索引</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% 验证输入的正确性</span></span><br><span class="line"><span class="comment">% 要求fitness是一个列向量， sel_num是一个数</span></span><br><span class="line">validateattributes(fitness, &#123;<span class="string">&#x27;numeric&#x27;</span>&#125;, &#123;<span class="string">&#x27;size&#x27;</span>,[<span class="built_in">nan</span>,<span class="number">1</span>]&#125;)</span><br><span class="line">validateattributes(sel_num, &#123;<span class="string">&#x27;numeric&#x27;</span>&#125;, &#123;<span class="string">&#x27;size&#x27;</span>,[<span class="number">1</span>,<span class="number">1</span>], <span class="string">&#x27;&lt;&#x27;</span>, <span class="built_in">length</span>(fitness)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">% 初始化</span></span><br><span class="line">wheel = [<span class="number">0</span>; cumsum(fitness ./ sum(fitness))];   <span class="comment">% 构建一个轮盘，所有的适应度之和等于1</span></span><br><span class="line">interval = <span class="number">1</span> /sel_num;                          <span class="comment">% 适应度是1，间距等于选择数量的倒数</span></span><br><span class="line">start = <span class="built_in">rand</span> * interval;                        <span class="comment">% 随机起点位置</span></span><br><span class="line">pointer = (<span class="number">0</span>:interval:interval*(sel_num<span class="number">-1</span>)) + start; <span class="comment">% 指针</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% 循环获取索引</span></span><br><span class="line"><span class="keyword">try</span></span><br><span class="line">    sel_ind = <span class="built_in">zeros</span>(sel_num, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:sel_num</span><br><span class="line">        p = pointer(<span class="built_in">i</span>); <span class="comment">% 指针</span></span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="built_in">length</span>(wheel)<span class="number">-1</span></span><br><span class="line">            <span class="comment">% 如果指针p落在当前区间内，则这个个体被选中</span></span><br><span class="line">            <span class="keyword">if</span> p &gt;= wheel(<span class="built_in">j</span>) &amp;&amp; p &lt; wheel(<span class="built_in">j</span>+<span class="number">1</span>)</span><br><span class="line">                sel_ind(<span class="built_in">i</span>) = <span class="built_in">j</span>;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">catch</span></span><br><span class="line">    save(<span class="string">&#x27;bug_file_sus_loop.mat&#x27;</span>)</span><br><span class="line">    error(<span class="string">&#x27;SUS循环出错&#x27;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>向量化代码</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sel_ind</span> = <span class="title">sus_vector</span><span class="params">(fitness, sel_num)</span></span></span><br><span class="line"><span class="comment">% sus for循环实现，输入适应度和要选择的个数</span></span><br><span class="line"><span class="comment">% 输出被选择的个体的索引</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% 验证输入的正确性</span></span><br><span class="line"><span class="comment">% 要求fitness是一个列向量， sel_num是一个数</span></span><br><span class="line">validateattributes(fitness, &#123;<span class="string">&#x27;numeric&#x27;</span>&#125;, &#123;<span class="string">&#x27;size&#x27;</span>,[<span class="built_in">nan</span>,<span class="number">1</span>]&#125;)</span><br><span class="line">validateattributes(sel_num, &#123;<span class="string">&#x27;numeric&#x27;</span>&#125;, &#123;<span class="string">&#x27;size&#x27;</span>,[<span class="number">1</span>,<span class="number">1</span>], <span class="string">&#x27;&lt;&#x27;</span>, <span class="built_in">length</span>(fitness)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">% 初始化</span></span><br><span class="line">wheel = [<span class="number">0</span>; cumsum(fitness ./ sum(fitness))];   <span class="comment">% 构建一个轮盘，所有的适应度之和等于1</span></span><br><span class="line">interval = <span class="number">1</span> /sel_num;                          <span class="comment">% 适应度是1，间距等于选择数量的倒数</span></span><br><span class="line">start = <span class="built_in">rand</span> * interval;                        <span class="comment">% 随机起点的偏移量</span></span><br><span class="line">pointer = (<span class="number">0</span>:interval:interval*(sel_num<span class="number">-1</span>)) + start; <span class="comment">% 指针</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% 向量化获得索引</span></span><br><span class="line">temp = <span class="built_in">bsxfun</span>(@gt, pointer, wheel); <span class="comment">% greater than</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% 此时，索引就等于temp每一列最后一个1的索引，也可以是每一列第一个0的索引</span></span><br><span class="line"><span class="comment">% 对每一列求和就行</span></span><br><span class="line">sel_ind = sum(temp)&#x27;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/matlab/matlab_prog/vectorization.html">https://ww2.mathworks.cn/help/matlab/matlab_prog/vectorization.html</a></p>
+<h2 id="冗余运算"><a class="markdownIt-Anchor" href="#冗余运算"></a> 冗余运算</h2>
+<p>消除for循环中的冗余运算有助于提升算法的性能。能放到外层的，就放到外层。</p>
+<p>给定一个矩阵A，要求A的每个数乘以当前行数，在加上当前列数，再加一个固定的数</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">1</span>) <span class="comment">% 行</span></span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">2</span>)</span><br><span class="line">		<span class="built_in">fix</span> = <span class="number">1</span>;</span><br><span class="line">		tmp = A(<span class="built_in">i</span>,<span class="built_in">j</span>);</span><br><span class="line">		tmp = tmp * <span class="built_in">i</span> + <span class="built_in">j</span>;</span><br><span class="line">		A(<span class="built_in">i</span>,<span class="built_in">j</span>) = tmp + <span class="built_in">fix</span>;</span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line"><span class="comment">% fix 提出</span></span><br><span class="line"><span class="built_in">fix</span> = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">1</span>) <span class="comment">% 行</span></span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">2</span>)</span><br><span class="line">		tmp = A(<span class="built_in">i</span>,<span class="built_in">j</span>);</span><br><span class="line">		tmp = tmp * <span class="built_in">i</span> + <span class="built_in">j</span>;</span><br><span class="line">		A(<span class="built_in">i</span>,<span class="built_in">j</span>) = tmp + <span class="built_in">fix</span>;</span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">fix</span> = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">1</span>) <span class="comment">% 行</span></span><br><span class="line">	A(<span class="built_in">i</span>,:) = A(<span class="built_in">i</span>,:) * <span class="built_in">i</span>;</span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">2</span>)</span><br><span class="line">		A(<span class="built_in">i</span>,<span class="built_in">j</span>) = A(<span class="built_in">i</span>,<span class="built_in">j</span>) + <span class="built_in">j</span> + <span class="built_in">fix</span>;</span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line"><span class="comment">% 向量化</span></span><br><span class="line">A = (<span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">1</span>))&#x27; .* A + (<span class="number">1</span>:<span class="built_in">size</span>(A, <span class="number">2</span>)) + <span class="built_in">fix</span></span><br></pre></td></tr></table></figure>
+<h2 id="性能分析"><a class="markdownIt-Anchor" href="#性能分析"></a> 性能分析</h2>
+<p><strong>我的代码怎么这么慢？想改，改什么呢？</strong></p>
+<p>这个时候，需要使用探查器进行代码性能分析</p>
+<p>比如对debug.m脚本（模拟禁忌搜索的过程）进行性能分析：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% debug.m</span></span><br><span class="line"><span class="comment">% 模拟禁忌搜索的过程</span></span><br><span class="line">tic</span><br><span class="line">tabu = <span class="built_in">zeros</span>(<span class="number">30</span>, <span class="number">2</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">1e5</span></span><br><span class="line">    rand_int = [randi(<span class="number">15</span>), randi(<span class="number">15</span>)];</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">ismember</span>(rand_int, tabu, <span class="string">&quot;rows&quot;</span>)</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        tabu = [rand_int; tabu(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-1</span>, :)];</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">toc</span><br></pre></td></tr></table></figure>
+<p><strong>Step 1. 打开探查器</strong></p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20230930192441679.png" alt="image-20230930192441679"></p>
+<p><strong>Step 2. 在探查器中运行代码</strong></p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20230930192625728.png" alt="image-20230930192625728"></p>
+<p><strong>Step 3. 点击函数名称 获得具体情况</strong></p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20230930192855816.png" alt="image-20230930192855816"></p>
+<p>发现原来是<code>ismember</code>函数运行太慢了，所以根据问题特性，我们自己写一个<code>my_ismember</code>函数，替换原有的<code>ismember</code>函数。</p>
+<p>原<code>ismember</code>函数耗时4.931秒，自己写的<code>my_ismember</code>函数耗时0.937秒。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20230930194758499.png" alt="image-20230930194758499"></p>
+<p>上述例子说明：</p>
+<ul>
+<li>
+<p>不一定内置函数就足够好，一些函数内置函数为了支持各种数据类型、大小，还是很慢的</p>
+</li>
+<li>
+<p>根据问题、数据结果特征进行重构</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flag</span> = <span class="title">my_ismember</span><span class="params">(a, b)</span></span></span><br><span class="line"><span class="comment">% 判断a是否在b中</span></span><br><span class="line"></span><br><span class="line">validateattributes(a, &#123;<span class="string">&#x27;numeric&#x27;</span>&#125;, &#123;<span class="string">&#x27;size&#x27;</span>,[<span class="number">1</span>,<span class="number">2</span>]&#125;)</span><br><span class="line">validateattributes(b, &#123;<span class="string">&#x27;numeric&#x27;</span>&#125;, &#123;<span class="string">&#x27;size&#x27;</span>,[<span class="built_in">nan</span>,<span class="number">2</span>]&#125;)</span><br><span class="line"></span><br><span class="line">col_1_flag = b(:, <span class="number">1</span>) == a(<span class="number">1</span>);</span><br><span class="line">col_2_flag = b(:, <span class="number">2</span>) == a(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> any(col_1_flag &amp; col_2_flag)</span><br><span class="line">    flag = <span class="built_in">true</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    flag = <span class="built_in">false</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong> 探查器中运行的代码速度包括了统计时间，因此比一般方式下运行更慢。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.mathworks.com/help/releases/R2023b/matlab/matlab_prog/profiling-for-improving-performance.html">https://www.mathworks.com/help/releases/R2023b/matlab/matlab_prog/profiling-for-improving-performance.html</a></p>
+</li>
+</ul>
+<h2 id="使用更具效率的算法"><a class="markdownIt-Anchor" href="#使用更具效率的算法"></a> 使用更具效率的算法</h2>
+<p>有些时候，真正慢的是使用的算法的复杂度很高（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>甚至<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>3</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>, 或者说是算法过于朴素），跟向量化等上述技术无关。这种慢根源于算法的复杂度，解决方法是换个思路重写。</p>
+<h3 id="双数之和"><a class="markdownIt-Anchor" href="#双数之和"></a> 双数之和</h3>
+<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出 <strong>和为目标值</strong> <em><code>target</code></em> 的那 <strong>两个</strong> 整数，并返回它们的数组下标。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% 输入：nums = [2,7,11,15], target = 9</span></span><br><span class="line"><span class="comment">% 输出：[0,1]</span></span><br><span class="line"><span class="comment">% 解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% 随机构造</span></span><br><span class="line">rng(<span class="built_in">pi</span>);</span><br><span class="line">nums = [<span class="number">2</span>,<span class="number">7</span>,<span class="number">11</span>,<span class="number">15</span>];</span><br><span class="line">rand_num = randperm(<span class="number">5e4</span>) + <span class="number">20</span>;</span><br><span class="line">nums = [nums, randperm(<span class="number">5e4</span>) + <span class="number">20</span>];</span><br><span class="line"></span><br><span class="line">nums = nums(randperm(<span class="built_in">length</span>(nums))); <span class="comment">% nums长度为50004 </span></span><br><span class="line">target = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line">tic</span><br><span class="line">two_sum(nums, target)</span><br><span class="line">toc</span><br><span class="line"><span class="comment">% ans =</span></span><br><span class="line"><span class="comment">%       36335       36975</span></span><br><span class="line"><span class="comment">% 历时 4.324590 秒。</span></span><br><span class="line"></span><br><span class="line">tic</span><br><span class="line">two_sum_hash(nums, target)</span><br><span class="line">toc</span><br><span class="line"><span class="comment">% ans = </span></span><br><span class="line"><span class="comment">%       36335       36975</span></span><br><span class="line"><span class="comment">% 历时 0.020854 秒。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%  足足200倍速度差距</span></span><br></pre></td></tr></table></figure>
+<p><strong>暴力枚举（朴素）算法</strong></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">output</span> = <span class="title">two_sum</span><span class="params">(nums, target)</span></span></span><br><span class="line"><span class="comment">% O(N^2)</span></span><br><span class="line">len_num = <span class="built_in">length</span>(nums);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:len_num</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:len_num</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">i</span> == <span class="built_in">j</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> nums(<span class="built_in">i</span>) + nums(<span class="built_in">j</span>) == target</span><br><span class="line">            output = [<span class="built_in">i</span>,<span class="built_in">j</span>];</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p><strong>字典 - 空间换时间</strong></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">output</span> = <span class="title">two_sum_hash</span><span class="params">(nums, target)</span></span></span><br><span class="line"><span class="comment">% 该代码使用了dictionary()， 仅支持2022b以上版本</span></span><br><span class="line">len_num = <span class="built_in">length</span>(nums);</span><br><span class="line">d = dictionary(nums, <span class="number">1</span>:len_num); <span class="comment">% O(N)</span></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:len_num <span class="comment">% O(N)</span></span><br><span class="line">    val_1 = nums(<span class="built_in">i</span>);</span><br><span class="line">    val_2 = target - val_1;</span><br><span class="line">    <span class="keyword">if</span> isKey(d, val_2) &amp;&amp; d(val_2) ~= <span class="built_in">i</span></span><br><span class="line">        output = [d(val_2), <span class="built_in">i</span>];</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h1 id="font-colordd0000工具箱font"><a class="markdownIt-Anchor" href="#font-colordd0000工具箱font"></a> <font color="#dd0000">工具箱</font></h1>
+<h2 id="matalb-coder"><a class="markdownIt-Anchor" href="#matalb-coder"></a> Matalb Coder</h2>
+<p>Matlab和python一样是一门解释性语言，因此运行速度不如编译型语言（C++等），因此一些复杂的函数运行起来相对较慢。</p>
+<p>不过，Matlab Coder提供了一种方法，使得我们可以将一个函数编译成C或C++或二进制文件，供Matlab使用。步骤如下：</p>
+<p>你需要一个Matlab  Coder工具箱。如果没有，则在附加功能中获取。在顶部APP中打开Coder。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001134101744.png" alt="image-20231001134101744"></p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001134208296.png" alt="image-20231001134208296"></p>
+<ul>
+<li><strong>进入Select环节</strong>：键入你想编译的函数，注意只能是函数，不能是脚本。这里以<code>lagrangian_relax</code>函数为例，然后点击next。<img src="/2024/07/12/2024-07-21-matlab/image-20231001134303941.png" alt="image-20231001134303941"></li>
+<li><strong>进入 review环节</strong>：在这个环节，Coder会检查你的代码有无问题，这个步骤会检查<code>lagrangian_relax</code>函数调用的所有函数。<img src="/2024/07/12/2024-07-21-matlab/image-20231001134944337.png" alt="image-20231001134944337"></li>
+</ul>
+<p>在底部出现了一条警告，此时应注意，警告和错误是不同的，程序可以有警告（前提是已知警告产生的原因和后果），错误则不同。错误将直接导致程序运行不通。</p>
+<p>解决完所有问题后，点Next。</p>
+<ul>
+<li>
+<p><strong>进入Define环节</strong>: 该环节定义了所有变量的类型&amp;大小。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001135319241.png" alt="image-20231001135319241"></p>
+<p>在上方的框中，输入调用<code>lagrangian_relax</code>函数的脚本，然后点<code>Autodefine Input Types</code>按钮，等程序运行，所有的变量的大小自动确定。<strong>但是</strong>，自动确定的变量大小类型是固定的，也就是说只能输入这种大小的数据，所以，对一些不确定大小的数据，需要手动将大小调整成inf。点Next，继续。</p>
+</li>
+<li>
+<p><strong>进入 check环节</strong>：Coder会运行之前输入的脚本，检查是否有运行问题、编译问题等等。这一步可能会出现各种报错，这些报错的原因并不是<code>lagrangian_relax</code>函数的结果有问题，而是写脚本的习惯超出编译器可理解的范围，或者编译器认为写的不严谨，数据类型/大小匹配等一系列问题。需要逐个修改，直至通过编译。</p>
+</li>
+</ul>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001140304900.png" alt="image-20231001140304900"></p>
+<ul>
+<li>
+<p><strong>进入 generate环节</strong>：如果仅仅想在matlab中调用编译好的二进制文件提升运行速度，那么选择mex即可，点Geneate等待生成。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001140519650.png" alt="image-20231001140519650"></p>
+</li>
+<li>
+<p><strong>完成</strong><br>
+<img src="/2024/07/12/2024-07-21-matlab/image-20231001140532936.png" alt="image-20231001140532936"></p>
+</li>
+</ul>
+<p>接下来，我们就可以像使用一个普通函数一样使用这个mex文件了。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">tic</span><br><span class="line">lagrangian_relax_mex(data, super_cus, param); <span class="comment">% 生成的mex文件</span></span><br><span class="line">toc</span><br><span class="line"><span class="comment">% Iter:  25; LB:    32233.19; UB*:   42478.36; Cons: 2.000000; Gap:  24.12 % </span></span><br><span class="line"><span class="comment">% LR finish: max iteration</span></span><br><span class="line"><span class="comment">% 历时 3.555206 秒。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">tic</span><br><span class="line">lagrangian_relax(data, super_cus, param); <span class="comment">% 原来的函数</span></span><br><span class="line">toc</span><br><span class="line"><span class="comment">% Iter:  25; LB:    32233.19; UB*:   42478.36; Cons: 2.000000; Gap:  24.12 % </span></span><br><span class="line"><span class="comment">% LR finish: max iteration</span></span><br><span class="line"><span class="comment">% 历时 93.820573 秒。</span></span><br></pre></td></tr></table></figure>
+<p>可以观察到，两种方法输出的结果是一样的，但是速度差了30倍。</p>
+<p><strong>Coder的缺点：</strong></p>
+<ul>
+<li>
+<p>并不是所有内置函数都支持Coder的，例如dictionary就不支持。不支持的函数会在编译时报错。</p>
+</li>
+<li>
+<p>Coder编译的文件来源于选择的C++编译器，很可能出现mex文件在另一台电脑上无法运行的情况。</p>
+</li>
+<li>
+<p>Coder编译的文件的另一个问题是不能跨平台，mac/win/linux编译得到的文件是不同的。</p>
+</li>
+</ul>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/releases/R2020b/coder/gs/generating-mex-functions-from-matlab-code-at-the-command-line.html">通过生成 MEX 函数加快 MATLAB 算法的执行速度</a></p>
+<p>​					<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/products/matlab-coder.html">从 MATLAB 代码生成 C 和 C++ 代码</a></p>
+<p>​					<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/604283307">MATLAB Coder入门到放弃</a></p>
+<p>​					<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36584460/article/details/110791330">https://blog.csdn.net/qq_36584460/article/details/110791330</a></p>
+<h2 id="并行计算工具箱-parallel-computing-toolbox"><a class="markdownIt-Anchor" href="#并行计算工具箱-parallel-computing-toolbox"></a> 并行计算工具箱 parallel computing toolbox</h2>
+<p>前面提到过利用多核心进行并行计算，需要并行计算工具箱。</p>
+<blockquote>
+<p>该工具箱通过在本地运行的 worker（MATLAB 计算引擎）上执行应用程序，允许你充分利用多核台式机的处理能力。无需更改代码，即可在集群或云上运行同一个应用程序。还可以将该工具箱与 MATLAB Parallel Server 结合使用，以执行由于太大而无法装入单台机器内存的矩阵计算</p>
+</blockquote>
+<h3 id="并行for循环"><a class="markdownIt-Anchor" href="#并行for循环"></a> 并行for循环</h3>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tic</span><br><span class="line">n = <span class="number">200</span>;</span><br><span class="line">A = <span class="number">500</span>;</span><br><span class="line">a = <span class="built_in">zeros</span>(<span class="number">1</span>,n);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:n</span><br><span class="line">    a(<span class="built_in">i</span>) = <span class="built_in">max</span>(<span class="built_in">abs</span>(eig(<span class="built_in">rand</span>(A))));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">toc</span><br><span class="line"><span class="comment">% 历时 37.256415 秒。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tic</span><br><span class="line">n = <span class="number">200</span>;</span><br><span class="line">A = <span class="number">500</span>;</span><br><span class="line">a = <span class="built_in">zeros</span>(<span class="number">1</span>,n);</span><br><span class="line"><span class="keyword">parfor</span> <span class="built_in">i</span> = <span class="number">1</span>:n</span><br><span class="line">    a(<span class="built_in">i</span>) = <span class="built_in">max</span>(<span class="built_in">abs</span>(eig(<span class="built_in">rand</span>(A)))); <span class="comment">% 最大 / 绝对 / 特征值 / 随机</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">toc</span><br><span class="line"><span class="comment">% 历时 8.028954 秒。</span></span><br></pre></td></tr></table></figure>
+<p>使用场景：许多简单计算的循环，parfor将循环划分为组，以便每个线程可以执行一组。</p>
+<p>**但是，**循环中一组循环的结果依赖前面某次循环的结果时，不能使用并行计算（归约<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/parallel-computing/reduction-variable.html">Reduction Variables</a>除外）。并行计算有一系列局限性，而且在一些情况下（例如，广播变量）并不能加速代码运行。</p>
+<p><strong>使用<code>parfor</code>的情况：</strong></p>
+<ul>
+<li>每次的for循环很慢（单个时间长）</li>
+<li>简单计算的多次循环（单个时间短但是数量多）</li>
+<li>多层for嵌套的外层使用parfor更具收益（<strong>思考：为什么？</strong>）</li>
+</ul>
+<p><strong>不推荐用<code>parfor</code>的情况：</strong></p>
+<ul>
+<li>已经将for向量化的情况（向量化比parfor收益更高）</li>
+<li>循环已经很快了（并行化的时间开销更高，包括初始化，分配等）</li>
+</ul>
+<p><strong>强烈反对的情况：</strong></p>
+<ul>
+<li>向量化 -&gt; for循环 -&gt; parfor循环 （反向优化）</li>
+</ul>
+<p><strong><code>for</code>转<code>parfor</code>的一个不可行举例</strong></p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001201801595.png" alt="image-20231001201801595"></p>
+<p>for转parfor一定程度上很复杂，有各式各样的规则限制、写法限制，这里只做一个简单介绍。关于什么时候用parfor，如何将for转为parfor，使用parfor的要求，常见问题等，参见<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/parallel-computing/parallel-for-loops-parfor.html?s_tid=CRUX_lftnav">parfor文档</a>。</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/products/parallel-computing.html">在多核计算机、GPU 和集群上执行并行计算</a></p>
+<p><strong>补充：parfor可以和coder结合使用，生成的mex文件也是支持多核计算的</strong></p>
+<h2 id="符号计算工具箱-symbolic-math-toolbox"><a class="markdownIt-Anchor" href="#符号计算工具箱-symbolic-math-toolbox"></a> 符号计算工具箱 Symbolic Math Toolbox</h2>
+<p>符号计算工具箱，就是能计算数学公式的一个工具箱，变量不再是数值而是符号。因此可以求计算<strong>定积分</strong>和<strong>不定积分</strong>的<strong>解析解</strong>，计算符号表达式或函数的<strong>导数</strong>，并使用级数展开式逼近函数，等等。</p>
+<p>例如，求<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mi>sin</mi><mo>⁡</mo><mi>x</mi><mi>d</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">\int_a^b \sin x dx</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.399828em;vertical-align:-0.35582em;"></span><span class="mop"><span class="mop op-symbol small-op" style="margin-right:0.19445em;position:relative;top:-0.0005599999999999772em;">∫</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.044008em;"><span style="top:-2.34418em;margin-left:-0.19445em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span><span style="top:-3.2579000000000002em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">b</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.35582em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">sin</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">x</span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span></span></span></span>在<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mfrac><mi>π</mi><mn>2</mn></mfrac><mo separator="true">,</mo><mfrac><mrow><mn>3</mn><mi>π</mi></mrow><mn>2</mn></mfrac><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[\frac{\pi}{2}, \frac{3\pi}{2}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mopen">[</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">]</span></span></span></span>上的积分</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">syms x</span><br><span class="line">int(<span class="built_in">sin</span>(x),<span class="built_in">pi</span>/<span class="number">2</span>,<span class="number">3</span>*<span class="built_in">pi</span>/<span class="number">2</span>)</span><br><span class="line"><span class="comment">% ans = 0</span></span><br></pre></td></tr></table></figure>
+<p>这只是一个简单的例子，表示我们可以使用matlab做这件事，具体应用：</p>
+<p><strong>某博弈论问题求纳什均衡点</strong></p>
+<p>解方程组：</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20240712115425.png" alt="image-20231001203458641"></p>
+<p>解得四个解中的一个解为纳什均衡点。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001151417317.png" alt="image-20231001151417317"></p>
+<p><strong>纳什均衡点<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">E_4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>的雅克比矩阵</strong></p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001151523651.png" alt="image-20231001151523651"></p>
+<p><strong>注：符号计算工具箱不支持coder</strong></p>
+<p>如何查看是否支持 coder？详见函数参考文档的底部支持列表</p>
+<h1 id="技巧经验"><a class="markdownIt-Anchor" href="#技巧经验"></a> 技巧经验</h1>
+<h2 id="使用结构体进行传参"><a class="markdownIt-Anchor" href="#使用结构体进行传参"></a> 使用结构体进行传参</h2>
+<p>假设你有一辆车，车长4米，平时跑72km/h，车重1000kg，载重2000kg，现在你写了一个函数<code>f</code>用于估计油耗。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">consume</span> = <span class="title">f</span><span class="params">(len, velocity, weight, capacity)</span></span></span><br><span class="line">	...</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>使用结构体封装一下</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vehicle = struct()</span><br><span class="line">vehicle.len = <span class="number">4</span>;</span><br><span class="line">vehicle.velocity = <span class="number">72</span>;</span><br><span class="line">vehicle.weight = <span class="number">1000</span>;</span><br><span class="line">vehicle.capacity = <span class="number">2000</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">consume</span> = <span class="title">f</span><span class="params">(vehicle)</span></span></span><br><span class="line">	...</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>包括传出，也可以使用结构体，解决了参数记错的问题。</p>
+<p><code>consume = [1, 2, 3, 4]</code></p>
+<p><code>consume. air = 1; % 空气阻力产生的燃料消耗</code></p>
+<p><code>consume.weight = 2; % 重量产生的消耗</code></p>
+<p><code>...</code></p>
+<p>给名字就不容易错了，比<code>consume(1)</code> <code>consume(2)</code> 这种要方便</p>
+<h2 id="使用句柄函数"><a class="markdownIt-Anchor" href="#使用句柄函数"></a> 使用句柄函数@</h2>
+<h3 id="c-bsxfunfunab"><a class="markdownIt-Anchor" href="#c-bsxfunfunab"></a> <code>C = bsxfun(fun,A,B)</code></h3>
+<p>Binary Singleton Expansion Function</p>
+<p>对数组 <code>A</code> 和 <code>B</code> 应用函数句柄 <code>fun</code> 指定的按元素二元运算。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">A = [<span class="number">8</span>; <span class="number">17</span>; <span class="number">20</span>; <span class="number">24</span>]</span><br><span class="line">B = [<span class="number">0</span> <span class="number">10</span> <span class="number">21</span>]</span><br><span class="line">C = <span class="built_in">bsxfun</span>(@gt,A,B)</span><br><span class="line"></span><br><span class="line"><span class="comment">% C = 4x3 logical array</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%    1   0   0</span></span><br><span class="line"><span class="comment">%    1   1   0</span></span><br><span class="line"><span class="comment">%    1   1   0</span></span><br><span class="line"><span class="comment">%    1   1   1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>其中<code>@gt</code>的意思是大于&quot;greater than&quot;， 因此生成了隐式扩展结果。</p>
+<p>接下来，给定一个向量<code>a</code>和一个向量<code>b</code>，求<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>−</mo><msup><mi>e</mi><mi>b</mi></msup></mrow><annotation encoding="application/x-tex">a-e^b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">b</span></span></span></span></span></span></span></span></span></span></span>的所有组合的结果。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span>];</span><br><span class="line">b = [<span class="number">5</span>; <span class="number">6</span>; <span class="number">7</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">% 第一种方法</span></span><br><span class="line">c = <span class="built_in">zeros</span>(<span class="built_in">length</span>(b), <span class="built_in">length</span>(a));</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">length</span>(a)</span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="built_in">length</span>(b)</span><br><span class="line">		c(<span class="built_in">j</span>,<span class="built_in">i</span>) = a(<span class="built_in">i</span>) - <span class="built_in">exp</span>(b(<span class="built_in">j</span>));</span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="built_in">disp</span>(c)</span><br><span class="line"></span><br><span class="line"><span class="comment">% 第二种方法</span></span><br><span class="line">f = @(a, b) a - <span class="built_in">exp</span>(b);</span><br><span class="line">c = <span class="built_in">bsxfun</span>(f, a, b);</span><br><span class="line"><span class="built_in">disp</span>(c)</span><br></pre></td></tr></table></figure>
+<h3 id="a-cellfunfunc-c"><a class="markdownIt-Anchor" href="#a-cellfunfunc-c"></a> <code>A = cellfun(func, C)</code></h3>
+<p>对元胞数组<code>C</code>的每个元胞进行操作。</p>
+<p>获取元胞数组中，每个元胞的大小</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">C = cell(<span class="number">3</span>, <span class="number">1</span>);</span><br><span class="line">C&#123;<span class="number">1</span>,<span class="number">1</span>&#125; = <span class="string">&#x27;Sunday&#x27;</span>;</span><br><span class="line">C&#123;<span class="number">2</span>,<span class="number">1</span>&#125; = <span class="built_in">magic</span>(<span class="number">3</span>);</span><br><span class="line">C&#123;<span class="number">3</span>,<span class="number">1</span>&#125; = <span class="number">1</span>:<span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">% 循环操作</span></span><br><span class="line">A = <span class="built_in">zeros</span>(<span class="built_in">size</span>(C, <span class="number">1</span>), <span class="number">1</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">size</span>(C, <span class="number">1</span>)</span><br><span class="line">	A(<span class="built_in">i</span>) = <span class="built_in">length</span>(C&#123;<span class="built_in">i</span>,<span class="number">1</span>&#125;(:));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="built_in">disp</span>(A)</span><br><span class="line"><span class="comment">% [6; 9; 10]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% cellfun</span></span><br><span class="line">A = <span class="built_in">cellfun</span>(@(x) <span class="built_in">length</span>(x(:)), C)</span><br><span class="line"><span class="comment">% [6; 9; 10]</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="a-structfunfunc-s"><a class="markdownIt-Anchor" href="#a-structfunfunc-s"></a> <code>A = structfun(func, S)</code></h3>
+<p>对标量结构体的每个字段应用函数</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">S.f1 = <span class="number">1</span>:<span class="number">10</span>;</span><br><span class="line">S.f2 = [<span class="number">2</span>; <span class="number">4</span>; <span class="number">6</span>];</span><br><span class="line">S.f3 = []</span><br><span class="line"></span><br><span class="line">A = structfun(@<span class="built_in">mean</span>,S)</span><br><span class="line"><span class="comment">% A = 3×1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%     5.5000</span></span><br><span class="line"><span class="comment">%     4.0000</span></span><br><span class="line"><span class="comment">%        NaN</span></span><br></pre></td></tr></table></figure>
+<h2 id="运行日志"><a class="markdownIt-Anchor" href="#运行日志"></a> 运行日志</h2>
+<p>将命令行窗口文本记录到日志文件中</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">diary <span class="string">&#x27;myDiaryFile.txt&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">10</span></span><br><span class="line">	<span class="built_in">disp</span>(<span class="built_in">exp</span>(<span class="built_in">i</span>))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">diary off</span><br></pre></td></tr></table></figure>
+<p>你就会得到一个<code>myDiaryFile.txt</code>文件，用于记录所有打印的结果。</p>
+<p>用处：追踪程序运行状况，运行到哪次迭代？运行到哪一步？配合其他函数，还可以记录何时运行等信息。</p>
+<h2 id="格式化输出"><a class="markdownIt-Anchor" href="#格式化输出"></a> 格式化输出</h2>
+<p>格式化字符串</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">formatSpec = <span class="string">&#x27;The array is %dx%d.&#x27;</span>;</span><br><span class="line">A1 = <span class="number">2</span>;</span><br><span class="line">A2 = <span class="number">3</span>;</span><br><span class="line">str = sprintf(formatSpec,A1,A2)</span><br><span class="line"><span class="comment">% str = </span></span><br><span class="line"><span class="comment">% &#x27;The array is 2x3.&#x27;</span></span><br><span class="line"></span><br><span class="line">fprint(formatSpec,A1,A2)</span><br><span class="line"><span class="comment">% &#x27;The array is 2x3.&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>参考： <a target="_blank" rel="noopener" href="https://www.mathworks.com/help/releases/R2023b/matlab/matlab_prog/profiling-for-improving-performance.html">https://www.mathworks.com/help/releases/R2023b/matlab/matlab_prog/profiling-for-improving-performance.html</a></p>
+<p>有什么用？多次运行一个函数，但是输入参数不同时，配合<code>diary</code>函数可生成结果日志</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001164150891.png" alt="image-20231001164150891"></p>
+<p>解放双手，从自动运行做起，拒绝<strong>手动保存</strong>每次的运行结果。</p>
+<h2 id="运行时间"><a class="markdownIt-Anchor" href="#运行时间"></a> 运行时间</h2>
+<p>想要获取运行了多久？使用<code>tic</code>和<code>toc</code>函数统计代码运行时间。</p>
+<p>高级用法：使用多个<code>tic</code>测量时间</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">tStart = tic;           <span class="comment">% pair 2: tic</span></span><br><span class="line">n = <span class="number">10</span>;</span><br><span class="line">T = <span class="built_in">zeros</span>(<span class="number">1</span>,n);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:n</span><br><span class="line">    A = <span class="built_in">rand</span>(<span class="number">12000</span>,<span class="number">4400</span>);</span><br><span class="line">    B = <span class="built_in">rand</span>(<span class="number">12000</span>,<span class="number">4400</span>);</span><br><span class="line">    tic         <span class="comment">% pair 1: tic</span></span><br><span class="line">    C = A.*B;</span><br><span class="line">    T(<span class="built_in">i</span>)= toc;  <span class="comment">% pair 1: toc</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">tMul = sum(T) <span class="comment">% tMul = 0.6037</span></span><br><span class="line">tEnd = toc(tStart) <span class="comment">% tEnd = 11.6301</span></span><br></pre></td></tr></table></figure>
+<p>其他统计代码运行时长的方法：</p>
+<p><a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/releases/R2023b/matlab/ref/cputime.html?">t = cputime</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.mathworks.com/help/releases/R2023b/matlab/ref/datetime.html?searchHighlight=datetime&amp;s_tid=doc_srchtitle#d126e310370">t = datetime</a></p>
+<h2 id="多层嵌套"><a class="markdownIt-Anchor" href="#多层嵌套"></a> 多层嵌套</h2>
+<p>看这样一个代码，每月每天你孤单会想起谁：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> month = <span class="number">1</span>:<span class="number">12</span>  <span class="comment">% 月</span></span><br><span class="line">	<span class="keyword">for</span> day = <span class="number">1</span>:<span class="number">30</span> <span class="comment">% 天</span></span><br><span class="line">		<span class="keyword">if</span> 孤单？</span><br><span class="line">			你想起一个人</span><br><span class="line">			<span class="keyword">if</span> 想找个人来陪</span><br><span class="line">				找！</span><br><span class="line">			<span class="keyword">end</span></span><br><span class="line">		<span class="keyword">end</span></span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>上述代码的问题：嵌套太多了，一层一层的嵌套。（写代码的习惯，不影响执行效率，但是影响可读性）</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> month = <span class="number">1</span>:<span class="number">12</span>  <span class="comment">% 月</span></span><br><span class="line">	<span class="keyword">for</span> day = <span class="number">1</span>:<span class="number">30</span> <span class="comment">% 天</span></span><br><span class="line">		<span class="keyword">if</span> ~ 孤单？ <span class="comment">% 非孤单 &quot;~&quot;取反</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">end</span></span><br><span class="line">		</span><br><span class="line">		你想起一个人</span><br><span class="line">		<span class="keyword">if</span> 想找个人来陪</span><br><span class="line">			找！</span><br><span class="line">		<span class="keyword">end</span></span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>使用<code>continue</code>关键字跳转，避免嵌套，提升可读性</p>
+<h2 id="latex公式"><a class="markdownIt-Anchor" href="#latex公式"></a> Latex公式</h2>
+<p>latex是特别常用且提升效率的公式编辑方法，推荐大家使用！</p>
+<p>好处：输入公式时，手不再使用鼠标，全键盘操作</p>
+<p>可以使用的场景：</p>
+<ul>
+<li>word</li>
+<li>markdown</li>
+<li>latex</li>
+<li>mathtype</li>
+<li>matlab</li>
+<li>…</li>
+</ul>
+<h2 id="实时脚本做展示"><a class="markdownIt-Anchor" href="#实时脚本做展示"></a> 实时脚本做展示</h2>
+<p>一般不用这个功能做开发，但是实时脚本是良好的展示工具</p>
+<p>类似于 python 的 jupyter notebook</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231006133646069.png" alt="image-20231006133646069"></p>
+<h2 id="数值精度问题"><a class="markdownIt-Anchor" href="#数值精度问题"></a> 数值精度问题</h2>
+<p>数值精度问题普遍存在于计算机语言中，我们不讨论产生数值精度的具体原因，只需要知道存在这样的问题。</p>
+<p>例如：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.1</span> + <span class="number">0.2</span> == <span class="number">0.3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% ans =</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%  logical</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%   0</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在for循环中，需要避免以下的情况</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">0.0</span>:<span class="number">0.1</span>:<span class="number">1.0</span></span><br><span class="line">    <span class="built_in">disp</span>(<span class="string">&#x27;-------------------&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">0.0</span>:<span class="number">0.1</span>:<span class="number">1.0</span>-<span class="built_in">i</span></span><br><span class="line">        k = <span class="number">1.0</span> - <span class="built_in">i</span> - <span class="built_in">j</span>;</span><br><span class="line">        <span class="built_in">disp</span>([<span class="built_in">i</span>,<span class="built_in">j</span>,k])</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% -------------------</span></span><br><span class="line"><span class="comment">%    0.7000         0    0.3000</span></span><br><span class="line"><span class="comment">%    0.7000    0.1000    0.2000</span></span><br><span class="line"><span class="comment">%    0.7000    0.2000    0.1000</span></span><br><span class="line"><span class="comment">%    0.7000    0.3000   -0.0000</span></span><br></pre></td></tr></table></figure>
+<p>出现一个非常小的负数，极有可能导致bug</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">0</span>:<span class="number">10</span></span><br><span class="line">    <span class="built_in">disp</span>(<span class="string">&#x27;-------------------&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">0</span>:(<span class="number">10</span>-<span class="built_in">i</span>)</span><br><span class="line">        k = <span class="number">10</span> - <span class="built_in">i</span> - <span class="built_in">j</span>;</span><br><span class="line">        <span class="built_in">disp</span>([<span class="built_in">i</span>,<span class="built_in">j</span>,k] / <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">-------------------</span><br><span class="line">    <span class="number">0.7000</span>         <span class="number">0</span>    <span class="number">0.3000</span></span><br><span class="line"></span><br><span class="line">    <span class="number">0.7000</span>    <span class="number">0.1000</span>    <span class="number">0.2000</span></span><br><span class="line"></span><br><span class="line">    <span class="number">0.7000</span>    <span class="number">0.2000</span>    <span class="number">0.1000</span></span><br><span class="line"></span><br><span class="line">    <span class="number">0.7000</span>    <span class="number">0.3000</span>         <span class="number">0</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="在线matlab"><a class="markdownIt-Anchor" href="#在线matlab"></a> 在线Matlab</h2>
+<p>电脑没有matlab？只要有许可证，就能使用matlab在线编程（<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/products/matlab-online.html%EF%BC%89%E3%80%82">https://ww2.mathworks.cn/products/matlab-online.html）。</a></p>
+<h2 id="markdown语言"><a class="markdownIt-Anchor" href="#markdown语言"></a> Markdown语言</h2>
+<p>本文档就是使用的markdown编写的，这是一种文本标记语言，实现文本的不同格式、样式。</p>
+<h1 id="如何debug"><a class="markdownIt-Anchor" href="#如何debug"></a> 如何DEBUG</h1>
+<h2 id="断点"><a class="markdownIt-Anchor" href="#断点"></a> 断点</h2>
+<p>调试程序是每个编程语言必备的操作，没有人能完美写完一个复杂的代码并且没有任何小错误。当这些错误直观发现不了时，使用断点追踪程序每步的运算有助于发现问题。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001165505931.png" alt="image-20231001165505931"></p>
+<h2 id="条件断点"><a class="markdownIt-Anchor" href="#条件断点"></a> 条件断点</h2>
+<p>例如在这个循环中，每次<code>j=3</code>时就报错，我们增加一个条件断点，当满足这个条件时，程序暂停。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001165725593.png" alt="image-20231001165725593"></p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001165858415.png" alt="image-20231001165858415"></p>
+<h2 id="错误暂停"><a class="markdownIt-Anchor" href="#错误暂停"></a> 错误暂停</h2>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001165922621.png" alt="image-20231001165922621"></p>
+<p>建议把出现错误暂停勾选，这样程序会停止在出错的哪一行，有助于分析/复现问题。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001165952424.png" alt="image-20231001165952424"></p>
+<h2 id="搜索问题"><a class="markdownIt-Anchor" href="#搜索问题"></a> 搜索问题</h2>
+<p>当一个问题，自己不能解决的时候，我们通常会使用搜索引擎进行检索，如何获得问题的答案？</p>
+<p>例如：</p>
+<blockquote>
+<p>我想删除一个cell数组中空的元胞，保留下非空的元胞</p>
+</blockquote>
+<p>一般我会用 “语言 + 关键词 ”搜索</p>
+<ul>
+<li>
+<p>搜索方法：<code>MATLAB cell删除空元胞</code></p>
+</li>
+<li>
+<p>结果质量：</p>
+<ul>
+<li>Matlab中文论坛 / 知乎 / 博客园</li>
+<li>CSDN（垃圾堆里找吃的，但不代表都是垃圾） / 简书</li>
+<li>百度知道 （几乎驴唇不对马嘴） / 其他小网站</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001170909421.png" alt="image-20231001170909421"></p>
+<h2 id="font-colordd0000向他人提问font"><a class="markdownIt-Anchor" href="#font-colordd0000向他人提问font"></a> <font color="#dd0000">向他人提问</font></h2>
+<p>向他人提问，包括同学、老师、网友等。</p>
+<p>为什么向他人提问很重要？正确的提问方式有助于提升双方沟通效率，快速发现问题。</p>
+<p><strong>错误的提问方式</strong></p>
+<ol>
+<li>
+<p>不会截图 用手机拍照的</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/snap.jpg" alt="image-snap"></p>
+</li>
+<li>
+<p>截图截一半 只截图报错信息traceback， 不截图代码的</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001171745717.png" alt="image-20231001171745717"></p>
+</li>
+<li>
+<p>不截图前后文的</p>
+<blockquote>
+<p>为什么我这句代码报错了？</p>
+</blockquote>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001172136136.png" alt="image-20231001172136136"></p>
+</li>
+<li>
+<p>自己不思考、不检索，直接问别人的。</p>
+<blockquote>
+<p>我想删除一个cell数组中空的元胞，保留下非空的元胞，matlab怎么写？</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>正确的提问方式</strong>（不仅适用于代码提问）</p>
+<ul>
+<li>
+<p>尽可能详细说出你的问题</p>
+</li>
+<li>
+<p>提供代码（如果是截图，截图要全面）</p>
+</li>
+<li>
+<p>问题如何复现</p>
+</li>
+<li>
+<p>你已经做了什么操作，但是还是不行</p>
+</li>
+<li>
+<p>发送之前读一读你的提问</p>
+<p>举例 1：</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001172945916.png" alt="image-20231001172945916"></p>
+<p>举例 2：<img src="/2024/07/12/2024-07-21-matlab/image-20231001173153802.png" alt="image-20231001173153802"></p>
+</li>
+</ul>
+<h2 id="文档"><a class="markdownIt-Anchor" href="#文档"></a> 文档</h2>
+<p>如果你知道matlab的某个函数的名字，但是不会写，那么可以在matlab右上角搜索文档，也可以在命令行中使用<code>help 'fun_name'</code>获得文档。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001173452560.png" alt="image-20231001173452560"></p>
+<p>此外，在命令行中输入<code>doc 'fun_name'</code>可以打开在线文档。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">doc <span class="built_in">zeros</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001173620154.png" alt="image-20231001173620154"></p>
+<h1 id="font-colordd0000外部功能font"><a class="markdownIt-Anchor" href="#font-colordd0000外部功能font"></a> <font color="#dd0000">外部功能</font></h1>
+<h2 id="python"><a class="markdownIt-Anchor" href="#python"></a> Python</h2>
+<p>很多时候，我们发现某个功能只在python中有，matlab中没有或者不如python好用。</p>
+<p>这个时候，我们可以写一个python函数，然后让matlab调用这个py函数，再将结果处理成matlab可接收的类型即可。</p>
+<p>举例来说，Gurobi对Python支持远远比matlab好，建模也更加方便，我们可以使用matlab调用python，python调用gurobi来实现：</p>
+<p>首先，我们写一个python调用gurobi的函数<code>grbpy_v.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># grbpy_v.py</span></span><br><span class="line"><span class="keyword">import</span> gurobipy <span class="keyword">as</span> gp</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">model</span>(<span class="params">f, alpha, beta, gamma, mu, kappa</span>):</span><br><span class="line">    <span class="comment"># 集合</span></span><br><span class="line">    I = <span class="built_in">range</span>(<span class="built_in">len</span>(f))</span><br><span class="line">    P = <span class="built_in">range</span>(<span class="built_in">len</span>(alpha[<span class="number">0</span>]))</span><br><span class="line">    N = <span class="built_in">range</span>(<span class="built_in">len</span>(gamma[<span class="number">0</span>]))</span><br><span class="line">    M = <span class="built_in">range</span>(<span class="built_in">len</span>(beta[<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建模</span></span><br><span class="line">    model = gp.Model()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 变量</span></span><br><span class="line">    v = model.addVars((i <span class="keyword">for</span> i <span class="keyword">in</span> I), vtype = gp.GRB.BINARY, name =<span class="string">&#x27;v&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 目标</span></span><br><span class="line">    obj = gp.quicksum((f[i] - gp.quicksum(alpha[i,p] <span class="keyword">for</span> p <span class="keyword">in</span> P) \</span><br><span class="line">                            - gp.quicksum(beta[i,m] - mu[i,m] <span class="keyword">for</span> m <span class="keyword">in</span> M)\</span><br><span class="line">                            - gp.quicksum(gamma[i,n] - kappa[i,n] <span class="keyword">for</span> n <span class="keyword">in</span> N)) * v[i] <span class="keyword">for</span> i <span class="keyword">in</span> I) \</span><br><span class="line">        - gp.quicksum(mu[i,m] <span class="keyword">for</span> i <span class="keyword">in</span> I <span class="keyword">for</span> m <span class="keyword">in</span> M) \</span><br><span class="line">        - gp.quicksum(kappa[i,n] <span class="keyword">for</span> i <span class="keyword">in</span> I <span class="keyword">for</span> n <span class="keyword">in</span> N)</span><br><span class="line">    model.setObjective(obj, sense = gp.GRB.MINIMIZE)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 约束</span></span><br><span class="line">    <span class="comment"># 无</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 求解</span></span><br><span class="line">    model.Params.OutputFlag = <span class="number">0</span></span><br><span class="line">    model.Params.MIPGap = <span class="number">0.01</span></span><br><span class="line">    model.optimize()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 整理</span></span><br><span class="line">    loc = np.zeros([<span class="number">1</span>,<span class="built_in">len</span>(f)])</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> I:</span><br><span class="line">        <span class="keyword">if</span> math.isclose(v[i].X, <span class="number">1</span>):</span><br><span class="line">            loc[<span class="number">0</span>,i] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    obj_val = model.getAttr(<span class="string">&#x27;ObjVal&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (loc, obj_val)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后，我们写一个matlab脚本（函数）调用这个py函数</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">py.importlib.reload(py.importlib.import_module(<span class="string">&#x27;grbpy_v&#x27;</span>));</span><br><span class="line"></span><br><span class="line">fix_ws_py = py.numpy.array(fixed_ws);</span><br><span class="line">alpha_py  = py.numpy.array(alpha);</span><br><span class="line">beta_py   = py.numpy.array(<span class="built_in">beta</span>);</span><br><span class="line">mu_py     = py.numpy.array(mu);</span><br><span class="line">gamma_py  = py.numpy.array(<span class="built_in">gamma</span>);</span><br><span class="line">kappa_py  = py.numpy.array(kappa);</span><br><span class="line"></span><br><span class="line">res = py.grbpy_v.model(fix_ws_py, alpha_py, beta_py, gamma_py, mu_py, kappa_py);</span><br></pre></td></tr></table></figure>
+<p>注意上述存在类型转换，需要把matlab的矩阵转成python的numpy矩阵才可以使用。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.mathworks.com/help/releases/R2023b/matlab/call-python-libraries.html?s_tid=doc_srchtitle">从 MATLAB 中调用 Python</a></p>
+<h2 id="gurobi-运筹优化专业"><a class="markdownIt-Anchor" href="#gurobi-运筹优化专业"></a> Gurobi （运筹优化专业）</h2>
+<p>Gurobi是一款求解器，做运筹优化方面常常会用到，这里将介绍直接使用matlab调用gurobi，不借助其他软件或包。</p>
+<p>来源于Guorbi官方文档：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">facility</span><span class="params">()</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">% Copyright 2023, Gurobi Optimization, LLC</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Facility location: a company currently ships its product from 5 plants</span></span><br><span class="line"><span class="comment">% to 4 warehouses. It is considering closing some plants to reduce</span></span><br><span class="line"><span class="comment">% costs. What plant(s) should the company close, in order to minimize</span></span><br><span class="line"><span class="comment">% transportation and fixed costs?</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Note that this example uses lists instead of dictionaries.  Since</span></span><br><span class="line"><span class="comment">% it does not work with sparse data, lists are a reasonable option.</span></span><br><span class="line"><span class="comment">%</span></span><br><span class="line"><span class="comment">% Based on an example from Frontline Systems:</span></span><br><span class="line"><span class="comment">%   http://www.solver.com/disfacility.htm</span></span><br><span class="line"><span class="comment">% Used with permission.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% define primitive data</span></span><br><span class="line">nPlants     = <span class="number">5</span>;</span><br><span class="line">nWarehouses = <span class="number">4</span>;</span><br><span class="line"><span class="comment">% Warehouse demand in thousands of units</span></span><br><span class="line">Demand      = [<span class="number">15</span>; <span class="number">18</span>; <span class="number">14</span>; <span class="number">20</span>];</span><br><span class="line"><span class="comment">% Plant capacity in thousands of units</span></span><br><span class="line">Capacity    = [<span class="number">20</span>; <span class="number">22</span>; <span class="number">17</span>; <span class="number">19</span>; <span class="number">18</span>];</span><br><span class="line"><span class="comment">% Fixed costs for each plant</span></span><br><span class="line">FixedCosts  = [<span class="number">12000</span>; <span class="number">15000</span>; <span class="number">17000</span>; <span class="number">13000</span>; <span class="number">16000</span>];</span><br><span class="line"><span class="comment">% Transportation costs per thousand units</span></span><br><span class="line">TransCosts  = [</span><br><span class="line">    <span class="number">4000</span>; <span class="number">2000</span>; <span class="number">3000</span>; <span class="number">2500</span>; <span class="number">4500</span>;</span><br><span class="line">    <span class="number">2500</span>; <span class="number">2600</span>; <span class="number">3400</span>; <span class="number">3000</span>; <span class="number">4000</span>;</span><br><span class="line">    <span class="number">1200</span>; <span class="number">1800</span>; <span class="number">2600</span>; <span class="number">4100</span>; <span class="number">3000</span>;</span><br><span class="line">    <span class="number">2200</span>; <span class="number">2600</span>; <span class="number">3100</span>; <span class="number">3700</span>; <span class="number">3200</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">% Index helper function</span></span><br><span class="line">flowidx = @(w, p) nPlants * w + p;</span><br><span class="line"></span><br><span class="line"><span class="comment">% Build model</span></span><br><span class="line">model.modelname = <span class="string">&#x27;facility&#x27;</span>;</span><br><span class="line">model.modelsense = <span class="string">&#x27;min&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">% Set data for variables</span></span><br><span class="line">ncol = nPlants + nPlants * nWarehouses;</span><br><span class="line">model.lb    = <span class="built_in">zeros</span>(ncol, <span class="number">1</span>);</span><br><span class="line">model.ub    = [<span class="built_in">ones</span>(nPlants, <span class="number">1</span>); <span class="built_in">inf</span>(nPlants * nWarehouses, <span class="number">1</span>)];</span><br><span class="line">model.obj   = [FixedCosts; TransCosts];</span><br><span class="line">model.vtype = [<span class="built_in">repmat</span>(<span class="string">&#x27;B&#x27;</span>, nPlants, <span class="number">1</span>); <span class="built_in">repmat</span>(<span class="string">&#x27;C&#x27;</span>, nPlants * nWarehouses, <span class="number">1</span>)];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> p = <span class="number">1</span>:nPlants</span><br><span class="line">    model.varnames&#123;p&#125; = sprintf(<span class="string">&#x27;Open%d&#x27;</span>, p);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> w = <span class="number">1</span>:nWarehouses</span><br><span class="line">    <span class="keyword">for</span> p = <span class="number">1</span>:nPlants</span><br><span class="line">        v = flowidx(w, p);</span><br><span class="line">        model.varnames&#123;v&#125; = sprintf(<span class="string">&#x27;Trans%d,%d&#x27;</span>, w, p);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% Set data for constraints and matrix</span></span><br><span class="line">nrow = nPlants + nWarehouses;</span><br><span class="line">model.A     = sparse(nrow, ncol);</span><br><span class="line">model.rhs   = [<span class="built_in">zeros</span>(nPlants, <span class="number">1</span>); Demand];</span><br><span class="line">model.sense = [<span class="built_in">repmat</span>(<span class="string">&#x27;&lt;&#x27;</span>, nPlants, <span class="number">1</span>); <span class="built_in">repmat</span>(<span class="string">&#x27;=&#x27;</span>, nWarehouses, <span class="number">1</span>)];</span><br><span class="line"></span><br><span class="line"><span class="comment">% Production constraints</span></span><br><span class="line"><span class="keyword">for</span> p = <span class="number">1</span>:nPlants</span><br><span class="line">    <span class="keyword">for</span> w = <span class="number">1</span>:nWarehouses</span><br><span class="line">        model.A(p, p) = -Capacity(p);</span><br><span class="line">        model.A(p, flowidx(w, p)) = <span class="number">1.0</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    model.constrnames&#123;p&#125; = sprintf(<span class="string">&#x27;Capacity%d&#x27;</span>, p);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% Demand constraints</span></span><br><span class="line"><span class="keyword">for</span> w = <span class="number">1</span>:nWarehouses</span><br><span class="line">    <span class="keyword">for</span> p = <span class="number">1</span>:nPlants</span><br><span class="line">        model.A(nPlants+w, flowidx(w, p)) = <span class="number">1.0</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    model.constrnames&#123;nPlants+w&#125; = sprintf(<span class="string">&#x27;Demand%d&#x27;</span>, w);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% Save model</span></span><br><span class="line">gurobi_write(model,<span class="string">&#x27;facility_m.lp&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">% Guess at the starting point: close the plant with the highest fixed</span></span><br><span class="line"><span class="comment">% costs; open all others first open all plants</span></span><br><span class="line">model.start = [<span class="built_in">ones</span>(nPlants, <span class="number">1</span>); <span class="built_in">inf</span>(nPlants * nWarehouses, <span class="number">1</span>)];</span><br><span class="line">[~, idx] = <span class="built_in">max</span>(FixedCosts);</span><br><span class="line">model.start(idx) = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">% Set parameters</span></span><br><span class="line">params.method = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">% Optimize</span></span><br><span class="line">res = gurobi(model, params);</span><br><span class="line"></span><br><span class="line"><span class="comment">% Print solution</span></span><br><span class="line"><span class="keyword">if</span> strcmp(res.status, <span class="string">&#x27;OPTIMAL&#x27;</span>)</span><br><span class="line">    fprintf(<span class="string">&#x27;\nTotal Costs: %g\n&#x27;</span>, res.objval);</span><br><span class="line">    fprintf(<span class="string">&#x27;solution:\n&#x27;</span>);</span><br><span class="line">    <span class="keyword">for</span> p = <span class="number">1</span>:nPlants</span><br><span class="line">        <span class="keyword">if</span> res.x(p) &gt; <span class="number">0.99</span></span><br><span class="line">            fprintf(<span class="string">&#x27;Plant %d open:\n&#x27;</span>, p);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">for</span> w = <span class="number">1</span>:nWarehouses</span><br><span class="line">            <span class="keyword">if</span> res.x(flowidx(w, p)) &gt; <span class="number">0.0001</span></span><br><span class="line">                fprintf(<span class="string">&#x27;  Transport %g units to warehouse %d\n&#x27;</span>, res.x(flowidx(w, p)), w);</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    fprintf(<span class="string">&#x27;\n No solution\n&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>想表达的是，gurobi对matlab很不友好：</p>
+<ul>
+<li>系数矩阵必须是自己算明白索引后，转换为一个稀疏矩阵。</li>
+<li>很难按照约束一条一条添加</li>
+<li>有些gurobi功能matlab不能使用</li>
+</ul>
+<p>同样模型，python的版本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3.7</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Copyright 2023, Gurobi Optimization, LLC</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Facility location: a company currently ships its product from 5 plants</span></span><br><span class="line"><span class="comment"># to 4 warehouses. It is considering closing some plants to reduce</span></span><br><span class="line"><span class="comment"># costs. What plant(s) should the company close, in order to minimize</span></span><br><span class="line"><span class="comment"># transportation and fixed costs?</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Note that this example uses lists instead of dictionaries.  Since</span></span><br><span class="line"><span class="comment"># it does not work with sparse data, lists are a reasonable option.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Based on an example from Frontline Systems:</span></span><br><span class="line"><span class="comment">#   http://www.solver.com/disfacility.htm</span></span><br><span class="line"><span class="comment"># Used with permission.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> gurobipy <span class="keyword">as</span> gp</span><br><span class="line"><span class="keyword">from</span> gurobipy <span class="keyword">import</span> GRB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Warehouse demand in thousands of units</span></span><br><span class="line">demand = [<span class="number">15</span>, <span class="number">18</span>, <span class="number">14</span>, <span class="number">20</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plant capacity in thousands of units</span></span><br><span class="line">capacity = [<span class="number">20</span>, <span class="number">22</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">18</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Fixed costs for each plant</span></span><br><span class="line">fixedCosts = [<span class="number">12000</span>, <span class="number">15000</span>, <span class="number">17000</span>, <span class="number">13000</span>, <span class="number">16000</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transportation costs per thousand units</span></span><br><span class="line">transCosts = [[<span class="number">4000</span>, <span class="number">2000</span>, <span class="number">3000</span>, <span class="number">2500</span>, <span class="number">4500</span>],</span><br><span class="line">              [<span class="number">2500</span>, <span class="number">2600</span>, <span class="number">3400</span>, <span class="number">3000</span>, <span class="number">4000</span>],</span><br><span class="line">              [<span class="number">1200</span>, <span class="number">1800</span>, <span class="number">2600</span>, <span class="number">4100</span>, <span class="number">3000</span>],</span><br><span class="line">              [<span class="number">2200</span>, <span class="number">2600</span>, <span class="number">3100</span>, <span class="number">3700</span>, <span class="number">3200</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Range of plants and warehouses</span></span><br><span class="line">plants = <span class="built_in">range</span>(<span class="built_in">len</span>(capacity))</span><br><span class="line">warehouses = <span class="built_in">range</span>(<span class="built_in">len</span>(demand))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Model</span></span><br><span class="line">m = gp.Model(<span class="string">&quot;facility&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Plant open decision variables: open[p] == 1 if plant p is open.</span></span><br><span class="line"><span class="built_in">open</span> = m.addVars(plants,</span><br><span class="line">                 vtype=GRB.BINARY,</span><br><span class="line">                 obj=fixedCosts,</span><br><span class="line">                 name=<span class="string">&quot;open&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transportation decision variables: transport[w,p] captures the</span></span><br><span class="line"><span class="comment"># optimal quantity to transport to warehouse w from plant p</span></span><br><span class="line">transport = m.addVars(warehouses, plants, obj=transCosts, name=<span class="string">&quot;trans&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># You could use Python looping constructs and m.addVar() to create</span></span><br><span class="line"><span class="comment"># these decision variables instead.  The following would be equivalent</span></span><br><span class="line"><span class="comment"># to the preceding two statements...</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># open = []</span></span><br><span class="line"><span class="comment"># for p in plants:</span></span><br><span class="line"><span class="comment">#     open.append(m.addVar(vtype=GRB.BINARY,</span></span><br><span class="line"><span class="comment">#                          obj=fixedCosts[p],</span></span><br><span class="line"><span class="comment">#                          name=&quot;open[%d]&quot; % p))</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># transport = []</span></span><br><span class="line"><span class="comment"># for w in warehouses:</span></span><br><span class="line"><span class="comment">#     transport.append([])</span></span><br><span class="line"><span class="comment">#     for p in plants:</span></span><br><span class="line"><span class="comment">#         transport[w].append(m.addVar(obj=transCosts[w][p],</span></span><br><span class="line"><span class="comment">#                                      name=&quot;trans[%d,%d]&quot; % (w, p)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The objective is to minimize the total fixed and variable costs</span></span><br><span class="line">m.ModelSense = GRB.MINIMIZE</span><br><span class="line"></span><br><span class="line"><span class="comment"># Production constraints</span></span><br><span class="line"><span class="comment"># Note that the right-hand limit sets the production to zero if the plant</span></span><br><span class="line"><span class="comment"># is closed</span></span><br><span class="line">m.addConstrs(</span><br><span class="line">    (transport.<span class="built_in">sum</span>(<span class="string">&#x27;*&#x27;</span>, p) &lt;= capacity[p]*<span class="built_in">open</span>[p] <span class="keyword">for</span> p <span class="keyword">in</span> plants), <span class="string">&quot;Capacity&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Using Python looping constructs, the preceding would be...</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># for p in plants:</span></span><br><span class="line"><span class="comment">#     m.addConstr(sum(transport[w][p] for w in warehouses)</span></span><br><span class="line"><span class="comment">#                 &lt;= capacity[p] * open[p], &quot;Capacity[%d]&quot; % p)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Demand constraints</span></span><br><span class="line">m.addConstrs(</span><br><span class="line">    (transport.<span class="built_in">sum</span>(w) == demand[w] <span class="keyword">for</span> w <span class="keyword">in</span> warehouses),</span><br><span class="line">    <span class="string">&quot;Demand&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ... and the preceding would be ...</span></span><br><span class="line"><span class="comment"># for w in warehouses:</span></span><br><span class="line"><span class="comment">#     m.addConstr(sum(transport[w][p] for p in plants) == demand[w],</span></span><br><span class="line"><span class="comment">#                 &quot;Demand[%d]&quot; % w)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Save model</span></span><br><span class="line">m.write(<span class="string">&#x27;facilityPY.lp&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Guess at the starting point: close the plant with the highest fixed costs;</span></span><br><span class="line"><span class="comment"># open all others</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># First open all plants</span></span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> plants:</span><br><span class="line">    <span class="built_in">open</span>[p].Start = <span class="number">1.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Now close the plant with the highest fixed cost</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Initial guess:&#x27;</span>)</span><br><span class="line">maxFixed = <span class="built_in">max</span>(fixedCosts)</span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> plants:</span><br><span class="line">    <span class="keyword">if</span> fixedCosts[p] == maxFixed:</span><br><span class="line">        <span class="built_in">open</span>[p].Start = <span class="number">0.0</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Closing plant %s&#x27;</span> % p)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use barrier to solve root relaxation</span></span><br><span class="line">m.Params.Method = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Solve</span></span><br><span class="line">m.optimize()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Print solution</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;\nTOTAL COSTS: %g&#x27;</span> % m.ObjVal)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;SOLUTION:&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> plants:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">open</span>[p].X &gt; <span class="number">0.99</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Plant %s open&#x27;</span> % p)</span><br><span class="line">        <span class="keyword">for</span> w <span class="keyword">in</span> warehouses:</span><br><span class="line">            <span class="keyword">if</span> transport[w, p].X &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;  Transport %g units to warehouse %s&#x27;</span> %</span><br><span class="line">                      (transport[w, p].X, w))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Plant %s closed!&#x27;</span> % p)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="yalmip-运筹优化方向"><a class="markdownIt-Anchor" href="#yalmip-运筹优化方向"></a> Yalmip （运筹优化方向）</h2>
+<p>yalmip是一款基于matlab进行数学建模的包，或者说是一种基于matlab的建模语言，使用yalmip的好处是解决了matlab建模的痛点，并且可以调用多个求解器对模型进行求解。</p>
+<p>然而，求解器方面，如果用gurobi / COPT，则一般使用python建模。如果用cplex，则使用java。</p>
+<p>如果不会别的语言，必须使用matlab进行建模和求解的话，yalmip无疑是最好的选择。</p>
+<h2 id="gramm画图"><a class="markdownIt-Anchor" href="#gramm画图"></a> gramm（画图）</h2>
+<p>gramm是基于matlab开发的一个绘图工具，可以画很多好看的图。</p>
+<p>matlab的图一般都很丑，需要自己不断调试。而gramm默认的配色，基本可以直接使用。</p>
+<p><img src="/2024/07/12/2024-07-21-matlab/image-20231001184526448.png" alt="image-20231001184526448"></p>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.mathworks.com/matlabcentral/fileexchange/54465-gramm-complete-data-visualization-toolbox-ggplot2-r-like">https://www.mathworks.com/matlabcentral/fileexchange/54465-gramm-complete-data-visualization-toolbox-ggplot2-r-like</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/piermorel/gramm">https://github.com/piermorel/gramm</a></p>
+<h1 id="one-more-thing"><a class="markdownIt-Anchor" href="#one-more-thing"></a> One more thing</h1>
+<p>科研常用工具列表，成为一个合格的板砖人（科研民工）</p>
+<table>
+<thead>
+<tr>
+<th>名字</th>
+<th>价格</th>
+<th>用处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Office三件套</td>
+<td>学校提供</td>
+<td>略</td>
+</tr>
+<tr>
+<td>Mathtype</td>
+<td>收费</td>
+<td>数学公式编辑（推荐搭配latex数学命令使用）</td>
+</tr>
+<tr>
+<td>Typora</td>
+<td>收费</td>
+<td>markdown编辑器，本次分享使用markdown完成</td>
+</tr>
+<tr>
+<td>VScode</td>
+<td>免费</td>
+<td>地表最强编辑器，我用vscode开发python, latex, markdown</td>
+</tr>
+<tr>
+<td>Notion</td>
+<td>免费</td>
+<td>个人知识库（上手很慢，但是可以很好规划你的生活）</td>
+</tr>
+<tr>
+<td>Endnote</td>
+<td>学校提供</td>
+<td>个人文献库（直接插入国标引用格式到word）</td>
+</tr>
+<tr>
+<td>Calibre</td>
+<td>免费</td>
+<td>个人图书馆</td>
+</tr>
+<tr>
+<td>百度云</td>
+<td>功能收费</td>
+<td>备份+同步（一年不到200块，同步文件+备份文件）</td>
+</tr>
+<tr>
+<td>Office 365</td>
+<td>收费</td>
+<td>与Office年度版本不同，这是订阅制的office，享受更多功能+1T 云盘</td>
+</tr>
+<tr>
+<td>Acrobat DC</td>
+<td>收费</td>
+<td>PDF编辑器</td>
+</tr>
+<tr>
+<td>Latex</td>
+<td>免费</td>
+<td>写期刊论文使用，直接输出pdf</td>
+</tr>
+<tr>
+<td>Overleaf / Slagger</td>
+<td>免费</td>
+<td>在线latex</td>
+</tr>
+<tr>
+<td>Powertoys</td>
+<td>免费</td>
+<td>Windows拓展工具（非常强大，保持唤醒、取色、分屏等等等）</td>
+</tr>
+</tbody>
+</table>
+<h1 id="结语"><a class="markdownIt-Anchor" href="#结语"></a> 结语</h1>
+<h2 id="matlab优缺点"><a class="markdownIt-Anchor" href="#matlab优缺点"></a> Matlab优缺点</h2>
+<p>优点：</p>
+<ul>
+<li>Matlab (matrix laboratory) 是一流的矩阵(Matrix)计算工具，提供了强大的矩阵计算方法</li>
+<li>预先定义好的功能，上手容易、语法简单（个人觉得比python还简单）</li>
+<li>图形化的界面，独立的平台</li>
+<li>来自官方的工具箱，长期支持和维护</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>一些数据结构在matlab中是没有原生支持的（字典结构是最近加入的,以前使用字典，优先队列等需要调用java）</li>
+<li>商业软件很少有公司使用，生存在科研机构，底层是闭源的</li>
+<li>运行速度较慢</li>
+</ul>
+<h2 id="如何使用matlab"><a class="markdownIt-Anchor" href="#如何使用matlab"></a> 如何使用Matlab</h2>
+<ul>
+<li>使用正版，获得更多的技术支持，工具箱，社区等。</li>
+<li>使用新版，获得更多的功能，更快的运行，更美的界面。</li>
+</ul>
+<h2 id="怎么学matlab"><a class="markdownIt-Anchor" href="#怎么学matlab"></a> 怎么学Matlab</h2>
+<ul>
+<li>只进行数值计算则matlab不是唯一选择（python, java等都可以），matlab的精髓是工具箱和仿真。</li>
+<li>任何一门语言的技能成长过程是多写多看多练，练习中成长。（编程语言不是自然语言，朗读代码不会获得进步。）</li>
+</ul>
+<hr>
+<p>希望各位能从今天的分享中收获自己想要的。感谢各位！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Matlab/" rel="tag"># Matlab</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/09/2024-07-09-hello_blog/" rel="prev" title="写在第一篇">
+                  <i class="fa fa-angle-left"></i> 写在第一篇
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/08/18/2024-08-18-%E5%86%99%E4%BD%9C/" rel="next" title="运筹写作的数学定理、命题等相关术语和应用">
+                  运筹写作的数学定理、命题等相关术语和应用 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Yu Runfeng</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
