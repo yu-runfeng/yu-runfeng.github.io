@@ -127,13 +127,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -155,6 +155,88 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://yrf990409.github.io/2024/11/22/2024-11-22-CMake%E5%92%8CGurobi%E8%81%94%E5%90%88%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yu Runfeng">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Runfeng的万事屋">
+      <meta itemprop="description" content="个人学习记录, 一些运筹, 一些代码, 一些吐槽">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Runfeng的万事屋">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/11/22/2024-11-22-CMake%E5%92%8CGurobi%E8%81%94%E5%90%88%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">CMake和Gurobi联合使用</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-11-22 16:48:46 / 修改时间：17:46:35" itemprop="dateCreated datePublished" datetime="2024-11-22T16:48:46+08:00">2024-11-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>以往都是用Python调用Gurobi进行数学规划建模，最近开始涉及C<ins>的编程。由于不想使用C</ins>和python联合编程（也许是C<ins>调用一个Python解释器？总之，没这样去做），所以直接用C</ins>调用Gurobi了。<br>
+由于我用的是mac，因此<code>VScode + Cmake</code>是最佳的组合，本文主要记录的是Cmake文件应该如何编写。(<strong>Windows系统请不要参考这个教程，不能保证正确性</strong>)</p>
+<p>首先，这是Gurobi官方的链接：<br>
+<a target="_blank" rel="noopener" href="https://support.gurobi.com/hc/en-us/articles/360039499751-How-do-I-use-CMake-to-build-Gurobi-C-C-projects">https://support.gurobi.com/hc/en-us/articles/360039499751-How-do-I-use-CMake-to-build-Gurobi-C-C-projects</a></p>
+<p>按照官方的链接，在Gurobi正确安装的情况下， <code>mip1_c++.cpp</code>亲测可以运行。如果发现，上述的教程不能通过Cmake编译，且原因是找不到Gurobi，那大概率是Gurobi的环境变量设置的有问题了，需要修改环境变量到指定的路径，<br>
+这里放上macos的<code>.zshrc</code>设置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> GUROBI_LICENSE_FILE=/Users/yurunfeng/gurobi.lic</span><br><span class="line"><span class="built_in">export</span> GUROBI_HOME=/Library/gurobi1103/macos_universal2</span><br></pre></td></tr></table></figure>
+<p>配置好环境变量，编译应该就没问题了。</p>
+<p>在自己的项目中，把<code>FindGUROBI.cmake</code>文件直接放在工程目录中， <code>CmakeLists.txt</code> <strong>需要自己更改</strong>。<code>FindGUROBI.cmake</code>也可根据需要进行更改，<br>
+比如以下这个例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CmakeLists.txt </span></span><br><span class="line"><span class="comment"># 这只是一个例子，如果不知道是什么意思的话，不要直接抄，肯定是运行不了的</span></span><br><span class="line">cmake_minimum_required(VERSION 3.29)</span><br><span class="line">cmake_policy(SET CMP0167 NEW)</span><br><span class="line">enable_language(CXX)</span><br><span class="line"></span><br><span class="line"><span class="comment"># set(CMAKE_OSX_ARCHITECTURES &quot;arm64&quot;)</span></span><br><span class="line"><span class="comment"># set(GUROBI_INCLUDE_DIRS &quot;/Library/gurobi1103/macos_universal2/include&quot;)  </span></span><br><span class="line"><span class="comment"># set(GUROBI_CXX_LIBRARY &quot;/Library/gurobi1103/macos_universal2/lib/libgurobi_c++.a&quot;) </span></span><br><span class="line"><span class="built_in">set</span>(CMAKE_PREFIX_PATH <span class="string">&quot;/Users/yurunfeng/vcpkg/installed/arm64-osx/share&quot;</span>)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_BUILD_TYPE <span class="string">&quot;Debug&quot;</span>)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_EXPORT_COMPILE_COMMANDS 1)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_STANDARD 20)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_STANDARD_REQUIRED True)</span><br><span class="line"><span class="built_in">set</span>(CXXFLAGS -D_GNU_SOURCE True)</span><br><span class="line"></span><br><span class="line">project(FWPSP)</span><br><span class="line"></span><br><span class="line">list(APPEND CMAKE_MODULE_PATH <span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>)</span><br><span class="line"></span><br><span class="line">find_package(nlohmann_json CONFIG REQUIRED) <span class="comment"># json </span></span><br><span class="line">find_package(Boost REQUIRED COMPONENTS program_options stacktrace_basic stacktrace_noop system)</span><br><span class="line">find_package(Boost REQUIRED COMPONENTS <span class="built_in">log</span> log_setup thread filesystem system date_time regex)</span><br><span class="line">find_package(GUROBI REQUIRED)</span><br><span class="line"></span><br><span class="line">include_directories(<span class="variable">$&#123;GUROBI_INCLUDE_DIRS&#125;</span>)</span><br><span class="line">include_directories(<span class="variable">$&#123;Boost_INCLUDE_DIRS&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span>(sources </span><br><span class="line">  src/main.cpp</span><br><span class="line">  src/alg_config.cpp</span><br><span class="line">  src/log_config.cpp</span><br><span class="line">  src/ip_model.cpp</span><br><span class="line">  src/data_loader.cpp</span><br><span class="line">  src/cbs_node.cpp</span><br><span class="line">  src/cbs.cpp</span><br><span class="line">  src/node_manager.cpp</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">add_executable(<span class="variable">$&#123;CMAKE_PROJECT_NAME&#125;</span> <span class="variable">$&#123;sources&#125;</span>)</span><br><span class="line"></span><br><span class="line">target_include_directories(FWPSP PRIVATE <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/inc)</span><br><span class="line">target_link_libraries(<span class="variable">$&#123;CMAKE_PROJECT_NAME&#125;</span> </span><br><span class="line">        nlohmann_json::nlohmann_json </span><br><span class="line">        <span class="variable">$&#123;Boost_LIBRARIES&#125;</span></span><br><span class="line">        <span class="variable">$&#123;GUROBI_LIBRARY&#125;</span></span><br><span class="line">        optimized <span class="variable">$&#123;GUROBI_CXX_LIBRARY&#125;</span></span><br><span class="line">        debug <span class="variable">$&#123;GUROBI_CXX_LIBRARY&#125;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span> STREQUAL <span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span>)</span><br><span class="line">  include(FeatureSummary)</span><br><span class="line">  feature_summary(WHAT ALL)</span><br><span class="line">endif()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>总之，重点在于如何告诉Cmake链接到Gurobi，如果某个环节错了的话，那就检查这个环节的问题，Cmake不熟悉也只能多学习Cmake了（因为我也不熟悉啊🥹）。<br>
+此外，如果Gurobi的环境变量没设置也没关系，上述的<code>CmakeLists.txt</code>被注释的部分就是设置Gurobi的路径(macos)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>(GUROBI_INCLUDE_DIRS <span class="string">&quot;/Library/gurobi1103/macos_universal2/include&quot;</span>)  </span><br><span class="line"><span class="built_in">set</span>(GUROBI_CXX_LIBRARY <span class="string">&quot;/Library/gurobi1103/macos_universal2/lib/libgurobi_c++.a&quot;</span>) </span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
